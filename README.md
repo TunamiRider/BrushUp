@@ -8,3 +8,4 @@ This application depends on the following libraries via Swift Package Manager:
 
 ## Demo
 
+[![Demo Video](https://youtube.com/shorts/u8lf7ne8SKU?feature=share)](https://youtube.com/shorts/u8lf7ne8SKU?feature=share)
