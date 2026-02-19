@@ -8,7 +8,10 @@ This application depends on the following libraries via Swift Package Manager:
 
 ## Demo
 
-[![Demo Video Click Image](https://github.com/user-attachments/assets/26c74666-51f1-40fd-bf49-ef58f88d02e0)
+[![Demo Video](https://github.com/user-attachments/assets/26c74666-51f1-40fd-bf49-ef58f88d02e0)
 ](https://youtube.com/shorts/u8lf7ne8SKU?feature=share)
 
+<p align="left">
+[Click image to watch demo →]
+</p>
 
