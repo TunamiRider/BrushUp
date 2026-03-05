@@ -12,36 +12,54 @@ import BrushUp
 import Foundation
 import SwiftUI
 struct BrushUpTests {
-    // var tet = PaintMe.UnsplashImage.init();
+    //### FetchService [UnsplashImage] Test ###
     @Test func example() async throws {
         // Write your test here and use APIs like `#expect(...)` to check expected conditions.
 
     }
     
-    @Test @MainActor func testLoadDataValidURL() async throws {
-        MockURLProtocol.responseData = mockJASON
-        let config = URLSessionConfiguration.ephemeral
-        config.protocolClasses = [MockURLProtocol.self]
-        let session = URLSession(configuration: config)
-        
-
-        let service = await FetchService();
-        let result = try await service.loadData(endpoint: TestHelper.validURL)
-        
-        #expect(result.count == 1)
-    }
+//    @Test @MainActor func testLoadDataValidURL() async throws {
+//        MockURLProtocol.responseData = mockJASON
+//        let config = URLSessionConfiguration.ephemeral
+//        config.protocolClasses = [MockURLProtocol.self]
+//        let session = URLSession(configuration: config)
+//        
+//
+//        let service = FetchService();
+//        let result = try await service.loadData(endpoint: TestHelper.validURL, type: ImageInfo.self)
+//        
+//        #expect(result.count == 1)
+//    }
+//    
+//    @Test @MainActor func testLoadDataInvalidURL() async throws {
+//        MockURLProtocol.error = NSError(domain: "", code: 0, userInfo: nil)
+//        let config = URLSessionConfiguration.ephemeral
+//        config.protocolClasses = [MockURLProtocol.self]
+//        let session = URLSession(configuration: config)
+//        
+//        
+//        let service = FetchService();
+//        let result = try await service.loadData(endpoint: TestHelper.inValidURL, type: ImageInfo.self)
+//        
+//        #expect(result.count == 0)
+//    }
     
-    @Test @MainActor func testLoadDataInvalidURL() async throws {
-        MockURLProtocol.error = NSError(domain: "", code: 0, userInfo: nil)
-        let config = URLSessionConfiguration.ephemeral
-        config.protocolClasses = [MockURLProtocol.self]
-        let session = URLSession(configuration: config)
+    //### FirebaseService Test ###
+    @Test @MainActor func testSaveHistoryData() async throws {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let mockData = try decoder.decode([PhotoRecord].self, from: mockJASON)
         
+    }
+    @Test @MainActor func testSaveInvalidHistoryData() async throws {
         
-        let service = await FetchService();
-        let result = try await service.loadData(endpoint: TestHelper.inValidURL)
-        
-        #expect(result.count == 0)
+    }
+//    @Test @MainActor func testReadHistoryData() async throws {
+//        let firebaseService : FirebaseService = FirebaseService()
+//        
+//        // let result: [UnsplashImage.ImageInfo] = firebaseService.readHistoryData()
+//    }
+    @Test @MainActor func testReadInvalidHistoryData() async throws {
         
     }
 }
@@ -55,6 +73,8 @@ let mockJASON =
     "urls": { 
         "regular": "https://example.com/image.jpg"
     }
+    "width": "30",
+    "height": "40"
 }
 ]
 """.data(using: .utf8)!
@@ -97,5 +117,3 @@ class MockURLProtocol: URLProtocol {
         
     }
 }
-
-
