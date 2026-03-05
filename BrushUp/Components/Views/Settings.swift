@@ -110,9 +110,9 @@ struct Settings: View {
     }
 }
 
-//#Preview {
-//    @State var isOn: Bool = false
-//    @State var minutes: Int = 1
-//    Settings(isMonochrone: $isOn, selectedNumber: $minutes).scrollDisabled(true)
-//}
+#Preview {
+    @State var isOn: Bool = false
+    @State var minutes: Int = 1
+    Settings(isMonochrone: $isOn, selectedNumber: $minutes).scrollDisabled(true)
+}
 

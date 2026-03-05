@@ -20,24 +20,55 @@ class AppDelegate: NSObject, UIApplicationDelegate {
   }
 }
 
+@MainActor
+@Observable
+final class AppServices {
+    let firebaseService: FirebaseService
+    let unsplashService: UnsplashService
+    
+    init(){
+        let deviceID = UIDevice.current.identifierForVendor!.uuidString
+        let fetchService = FetchService()
+        let firebaseService = FirebaseService(uuidString: deviceID)
+        self.firebaseService = firebaseService
+        self.unsplashService = UnsplashService(fetchService: fetchService, firebaseService: firebaseService)
+    }
+}
 @main
 struct BrushUpApp: App {
-    @State var unsplashImage = UnsplashImage()
     @State var brushUpTimer = BrushUpTimer()
-    @State var fireBaseService = FirebaseService()
+    @State var appServices = AppServices()
+    
+    private var unsplashPhotoManager: UnsplashPhotoManager {
+        UnsplashPhotoManager(
+            unsplashService: appServices.unsplashService,
+            firebaseService: appServices.firebaseService
+        )
+    }
     
     @State var goMainView = false
     @State var isResume = false
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
+    
+    init() {
+        // ✅ Perfectly safe - runs after Bundle.main is ready
+//        let key = Secrets.apiKey
+//        print("\(key)")
+//        print("🚀 App launched - API Key: '\(key.isEmpty ? "MISSING" : "LOADED")'")
+//        print("=== FULL DIAGNOSTIC ===")
+//        print("1. Info.plist keys: \(Bundle.main.infoDictionary?.keys)")
+//        print("2. MY_API_KEY raw: \(Bundle.main.object(forInfoDictionaryKey: "UNSPLASH_API_KEY") ?? "MISSING")")
+//        print("3. Secrets.apiKey: '\(Secrets.apiKey)'")
+//        print("======================")
+    }
+    
     var body: some Scene {
         WindowGroup {
-            HomePageMain()
-                .environment(fireBaseService)
-                .environment(unsplashImage)
+            MainScreen()
+                .environment(appServices)
                 .environment(brushUpTimer)
-//            ContentView(goMainView: $goMainView, isResume: $isResume)
-//                .environment(dataModel).environment(brushUpTimer)
+                .environment(unsplashPhotoManager)
         }
     }
 }

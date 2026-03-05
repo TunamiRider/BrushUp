@@ -29,6 +29,7 @@ import AVFoundation
     private var startDate: Date?
     private var delayDate: Date?
     
+    
     private let player = AVPlayer.dingPlayer()
     
     public init(lengthInMinutes: Int) {
@@ -64,6 +65,10 @@ import AVFoundation
             delayDate = Date()
         }
     }
+    public func stop(){
+        timerStopped = true
+        delayDate = Date()
+    }
     
     public func endTimer(){
         timer?.invalidate()
@@ -87,7 +92,7 @@ import AVFoundation
             
             let secondsElapsed = Int(Date().timeIntervalSince1970 - startDate.timeIntervalSince1970)
             
-            let previousSecondsElapsed = self.secondsElapsed
+            //let previousSecondsElapsed = self.secondsElapsed
             self.secondsElapsed = secondsElapsed
            
             
