@@ -64,7 +64,10 @@ public struct PhotoPlayerScreen: View {
                         .ignoresSafeArea(.all)
                 }
                 //.ignoresSafeArea(.container, edges: .top)
-                //.frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height, alignment: .bottom)
+                //.ignoresSafeArea(.all)
+                //.frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.8, alignment: .top)
+                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.85, alignment: .top)
+                
                 
                 
                 TimerPlayView(isNext: $isNext, isPrevious: $isPrevious, isHome: $goMainView, isSettings: $isSettings, isPaused: $isPaused)
@@ -72,11 +75,10 @@ public struct PhotoPlayerScreen: View {
                     //.id(brushupTimer.secondsElapsed)
                     .ignoresSafeArea(.all)
                     //.frame(maxHeight: .infinity, alignment: .bottom)
-                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 14, alignment: .bottom)
+                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.1 , alignment: .bottom)
                     //.ignoresSafeArea(.container)
                     //.padding(.horizontal, 20)
                     .ignoresSafeArea(.container, edges: .bottom)
-
 
             }
             .sheet(isPresented: $isSettings) {
@@ -97,8 +99,11 @@ public struct PhotoPlayerScreen: View {
                 await photoManager.fetchRandomPhoto()
                 brushupTimer.reset()
                 brushupTimer.start()
+                
+                brushupTimer.stop()
                 //brushupTimer.toggleTimer()
-                //isPaused = true
+                isPaused = true
+
             }else {
                 isResume.toggle()
             }
@@ -124,28 +129,54 @@ public struct PhotoPlayerScreen: View {
         }
         .onChange(of: isNext){oldValue, newValue in
             guard newValue else { return }
+            
             isPaused = false
             isNext = false
             brushupTimer.stop()
             brushupTimer.reset()
-
+            
             Task{
-                await photoManager.fetchRandomPhoto()
+                if photoManager.isNextPhotoAvailable() {
+                    await photoManager.fetchNextPhoto()
+                }else {
+                    await photoManager.fetchRandomPhoto()
+                }
+
                 brushupTimer.start()
-                
                 brushupTimer.play()
-//                brushupTimer.stop()
-//                print("Task... ")
+            }
+            //print("next button clicked")
+        }
+        .onChange(of: isPrevious){oldValue, newValue in
+            guard newValue else { return }
+            
+            if !photoManager.isPreviousPhotoAvailable() {
+                isPrevious = false
+                return
             }
             
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-
-//            }
+            isPaused = false
+            isPrevious = false
+            brushupTimer.stop()
+            brushupTimer.reset()
+            
+            Task {
+                if photoManager.isPreviousPhotoAvailable() {
+                    await photoManager.fetchPreviousPhoto()
+                }
+                
+                brushupTimer.start()
+                brushupTimer.play()
+            }
+            //print("previous button clicked")
         }
         .onChange(of: brushupTimer.secondsElapsed){
             if(brushupTimer.secondsRemaining==0){
                 //isPaused = true
                 brushupTimer.stop()
+                Task {
+                    await photoManager.savePhotoData()
+                }
             }
         }
         .onChange(of: isSettings){
@@ -153,6 +184,24 @@ public struct PhotoPlayerScreen: View {
                 isPaused = true
             }
         }
+
+//        .onChange(of: isPrevious){oldValue, newValue in
+//            guard newValue else { return }
+//            isPrevious = false
+//            print("previous button clicked")
+//            if(photoManager.isPreviousPhotoAvailable()){
+//                isPaused = false
+//                brushupTimer.stop()
+//                brushupTimer.reset()
+//                
+//                Task{
+//                    await photoManager.fetchPreviousPhoto()
+//                    brushupTimer.start()
+//                    brushupTimer.play()
+//                }
+//                print("previous photo loaded")
+//            }
+//        }
 //        .onChange(of: brushupTimer.secondsElapsed){
 //
 //            if(brushupTimer.secondsRemaining==0){

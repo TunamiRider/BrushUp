@@ -80,7 +80,7 @@ struct TimerPlayView: View {
                             Image(systemName: "house")
                                 .font(.title2)
                         }
-                        .padding(.horizontal, 18)
+                        .padding(.horizontal, 28)
                         .opacity((isDimmed && brushupTimer.secondsRemaining>0) ? 0.3 : 1.0)
                         .animation(.easeInOut(duration: 1), value: isDimmed)
                         
@@ -90,7 +90,7 @@ struct TimerPlayView: View {
                         HStack(spacing: 8) {
                             Button(action: {
                                 // previous action
-                                isPrevious.toggle()
+                                isPrevious = true
                             }) {
                                 Image(systemName: "backward.end")
                                     .font(.title)
@@ -141,7 +141,7 @@ struct TimerPlayView: View {
                             Image(systemName: "gearshape")
                                 .font(.title2)
                         }
-                        .padding(.horizontal, 18)
+                        .padding(.horizontal, 28)
                         .opacity((isDimmed && brushupTimer.secondsRemaining>0) ? 0.3 : 1.0)
                         .animation(.easeInOut(duration: 1), value: isDimmed)
                     }
@@ -178,10 +178,8 @@ struct TimerPlayView: View {
 //                brushupTimer.reset()
 //                brushupTimer.start()
 //                brushupTimer.toggleTimer()
-//                print("next: \(brushupTimer.secondsElapsed) : \(isNext)")
 //                isNext.toggle()
 //                isPaused = true
-//                print("after :\(brushupTimer.secondsElapsed) : \(isNext)")
 //            }
         }
         
