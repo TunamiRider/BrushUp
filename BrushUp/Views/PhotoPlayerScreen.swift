@@ -24,7 +24,7 @@ public struct PhotoPlayerScreen: View {
     
     @State var isSettings = false
     @State private var isNext: Bool = false
-    @State private var isTest = false
+    @State private var isPrevious = false
     @State private var isPaused: Bool = true
 
     // private let player = AVPlayer.dingPlayer()
@@ -34,6 +34,9 @@ public struct PhotoPlayerScreen: View {
     @State private var previousOrientation: UIDeviceOrientation?
     private var orientationPublisher = NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
 
+    var shouldRefresh: Bool {
+        isNext || brushupTimer.secondsElapsed <= 0
+    }
     
     init(goMainView: Binding<Bool>, isResume: Binding<Bool>, minutes: Binding<Int>, isMonochrone: Binding<Bool>, isPlaying: Binding<Bool>) {
         self._goMainView = goMainView
@@ -52,7 +55,6 @@ public struct PhotoPlayerScreen: View {
                             .scaledToFill()
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                             .ignoresSafeArea(.all)
-                            
                             .grayscale(isMonochrone ? 1.0 : 0.0)
 
                 } placeholder: {
@@ -65,7 +67,7 @@ public struct PhotoPlayerScreen: View {
                 //.frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height, alignment: .bottom)
                 
                 
-                TimerPlayView(secondsElapsed: brushupTimer.secondsElapsed, secondsRemaining: brushupTimer.secondsRemaining,isNext: $isNext, isPrevious: $isTest, isHome: $goMainView, isSettings: $isSettings, isPaused: $isPaused)
+                TimerPlayView(isNext: $isNext, isPrevious: $isPrevious, isHome: $goMainView, isSettings: $isSettings, isPaused: $isPaused)
                     //.id(isNext)
                     //.id(brushupTimer.secondsElapsed)
                     .ignoresSafeArea(.all)
@@ -95,19 +97,10 @@ public struct PhotoPlayerScreen: View {
                 await photoManager.fetchRandomPhoto()
                 brushupTimer.reset()
                 brushupTimer.start()
-                brushupTimer.toggleTimer()
+                //brushupTimer.toggleTimer()
+                //isPaused = true
             }else {
                 isResume.toggle()
-            }
-        }
-        .onChange(of: isPaused){
-
-            if(isPaused){
-                brushupTimer.stop()
-                isPlaying = false
-            }else{
-                brushupTimer.toggleTimer()
-                isPlaying = true
             }
         }
         .onDisappear {
@@ -117,55 +110,77 @@ public struct PhotoPlayerScreen: View {
             }else {
                 brushupTimer.endTimer()
             }
-            
-            
             UIDevice.current.beginGeneratingDeviceOrientationNotifications()
         }
-        .onChange(of: brushupTimer.secondsElapsed){
+        .onChange(of: isPaused){
 
-            if(brushupTimer.secondsRemaining==0){
+            if(isPaused){
                 brushupTimer.stop()
-                isPaused = true
-                //brushupTimer.reset()
-                Task {
-                    await photoManager.savePhotoData()
-                    //await photoManager.fetchRandomPhoto()
-                    //brushupTimer.start()//test
-                    //brushupTimer.toggleTimer()//test
-                }
-                //brushupTimer.start()
+                isPlaying = false
+            }else{
+                brushupTimer.play()
+                isPlaying = true
             }
-        }
-        .onChange(of: isSettings){
-            
-            
-            if isPlaying {
-                brushupTimer.toggleTimer()
-            }
-
-            let value = UserDefaults.standard.string(forKey: "minutes")
-            if let minutes: Int = Int(value ?? "1"){
-                self.minutes = minutes
-            }
-
         }
         .onChange(of: isNext){oldValue, newValue in
             guard newValue else { return }
-            
+            isPaused = false
+            isNext = false
             brushupTimer.stop()
             brushupTimer.reset()
+
             Task{
                 await photoManager.fetchRandomPhoto()
                 brushupTimer.start()
-                //brushupTimer.toggleTimer()
-                //brushupTimer.stop()
+                
+                brushupTimer.play()
+//                brushupTimer.stop()
+//                print("Task... ")
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                isNext = false
-                isPaused = true
+            
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+
+//            }
+        }
+        .onChange(of: brushupTimer.secondsElapsed){
+            if(brushupTimer.secondsRemaining==0){
+                //isPaused = true
                 brushupTimer.stop()
             }
         }
+        .onChange(of: isSettings){
+            if(isSettings && brushupTimer.secondsRemaining>0){
+                isPaused = true
+            }
+        }
+//        .onChange(of: brushupTimer.secondsElapsed){
+//
+//            if(brushupTimer.secondsRemaining==0){
+//                brushupTimer.stop()
+//                isPaused = true
+//                //brushupTimer.reset()
+//                Task {
+//                    await photoManager.savePhotoData()
+//                    //await photoManager.fetchRandomPhoto()
+//                    //brushupTimer.start()//test
+//                    //brushupTimer.toggleTimer()//test
+//                }
+//                //brushupTimer.start()
+//            }
+//        }
+//        .onChange(of: isSettings){
+//            
+//            
+//            if isPlaying {
+//                brushupTimer.toggleTimer()
+//            }
+//
+//            let value = UserDefaults.standard.string(forKey: "minutes")
+//            if let minutes: Int = Int(value ?? "1"){
+//                self.minutes = minutes
+//            }
+//        }
+
         .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
             let newOrientation = UIDevice.current.orientation
             if newOrientation.isValidInterfaceOrientation && newOrientation != self.currentOrientation {

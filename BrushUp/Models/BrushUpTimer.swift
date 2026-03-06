@@ -69,6 +69,11 @@ import AVFoundation
         timerStopped = true
         delayDate = Date()
     }
+    public func play(){
+        if timerStopped {
+            toggleTimer()
+        }
+    }
     
     public func endTimer(){
         timer?.invalidate()
@@ -81,6 +86,10 @@ import AVFoundation
         
         self.lengthInMinutes = minutes
         self.secondsRemaining = lengthInSeconds
+    }
+    
+    public func getlengthInMinutes() -> Int {
+        return lengthInMinutes
     }
     
     
