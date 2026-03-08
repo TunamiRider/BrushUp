@@ -7,8 +7,8 @@
 import SwiftUI
 struct Settings: View {
 
-    @Binding var  isMonochrone: Bool
-    @Binding var selectedNumber: Int
+    @Binding var  isMonochrome: Bool
+    //@Binding var selectedNumber: Int
     
     var body: some View {
         ScrollView {
@@ -18,7 +18,7 @@ struct Settings: View {
                 .foregroundColor(.white)
             //Divider()
             VStack {
-                MinuteSelector(selectedNumber: $selectedNumber)
+                MinuteSelector()
                 //Divider()
                 makeMonochromeView()
                 Spacer(minLength: 16)
@@ -31,17 +31,16 @@ struct Settings: View {
                 RoundedRectangle(cornerRadius: 32)
                     .stroke(Color(AppConstants.UISpaceBlack), lineWidth: 0.5)
             )
-            .onChange(of: isMonochrone) { _, newValue in
+            .onChange(of: isMonochrome) { _, newValue in
                 UserDefaults.standard.set(newValue, forKey: "isMonochrome")
             }
             .padding(.horizontal)
             .padding(.vertical)
-
-            
             PhotoCategoryView()
-            
         }
-        .background(AppConstants.spaceblack.ignoresSafeArea())
+        .onAppear {
+            isMonochrome = UserDefaults.standard.bool(forKey: "isMonochrome")
+        }
     }
     struct ColoredToggleStyle: ToggleStyle {
         var onColor: Color
@@ -91,7 +90,7 @@ struct Settings: View {
     }
     @ViewBuilder
     fileprivate func makeMonochromeView() -> some View {
-        Toggle(isOn: $isMonochrone) {
+        Toggle(isOn: $isMonochrome) {
             Label {
                 Text("Monochrome").foregroundColor(.white)
             } icon: {
@@ -105,14 +104,13 @@ struct Settings: View {
 //                    )
             }
         }
-        .toggleStyle(ColoredToggleStyle(onColor: .gray, offColor: .gray, thumbColor: .white, isOn: $isMonochrone))
+        .toggleStyle(ColoredToggleStyle(onColor: .gray, offColor: .gray, thumbColor: .white, isOn: $isMonochrome))
         
     }
 }
 
 #Preview {
-    @State var isOn: Bool = false
-    @State var minutes: Int = 1
-    Settings(isMonochrone: $isOn, selectedNumber: $minutes).scrollDisabled(true)
+    @Previewable @State var isMonochrome: Bool = false
+    Settings(isMonochrome: $isMonochrome).scrollDisabled(true)
 }
 

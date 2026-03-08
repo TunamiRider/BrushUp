@@ -7,7 +7,7 @@
 import SwiftUI
 import SwiftData
 struct MinuteSelector: View {
-    @Binding var selectedNumber: Int
+    @State var selectedNumber: Int = 1
     
     var body: some View {
         VStack(spacing: 0) {
@@ -70,5 +70,11 @@ struct MinuteSelector: View {
             }
         }
         .padding(.horizontal, 2)
+        .onAppear{
+            let saved = UserDefaults.standard.integer(forKey: "minutes")
+            if saved != 0, AppConstants.minutesList.contains(saved) {
+                selectedNumber = saved
+            }
+        }
     }
 }

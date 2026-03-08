@@ -28,6 +28,18 @@ struct AppConstants {
     static let minutesList = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
     
     static let maximumDrawingGoal = 10
+    
+    @MainActor
+    static let isiOS: Bool = {
+        #if os(iOS)
+        return UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .compactMap { $0.windows.first }
+            .first?.windowScene?.traitCollection.horizontalSizeClass == .regular
+        #else
+        return false
+        #endif
+    }()
 }
 
 enum Frequency: String, CaseIterable, Identifiable {
@@ -36,4 +48,17 @@ enum Frequency: String, CaseIterable, Identifiable {
     case month = "Month"
 
     var id: String { rawValue }
+}
+
+enum Tab: String, CaseIterable {
+    case home, history, settings
+    
+    var title: String { rawValue.capitalized }
+    var image: String {
+        switch self {
+        case .home: return "house"
+        case .history: return "clock.arrow.circlepath"
+        case .settings: return "gear"
+        }
+    }
 }

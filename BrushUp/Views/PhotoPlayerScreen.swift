@@ -16,8 +16,8 @@ public struct PhotoPlayerScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(BrushUpTimer.self) private var brushupTimer
 
-    @Binding var minutes: Int
-    @Binding var isMonochrone: Bool
+    //@State var minutes: Int = 1
+    @State var isMonochrome: Bool = false
     @Binding var goMainView: Bool
     @Binding var isResume: Bool
     @Binding var isPlaying: Bool
@@ -33,66 +33,49 @@ public struct PhotoPlayerScreen: View {
     @State private var currentOrientation: UIDeviceOrientation = UIDevice.current.orientation
     @State private var previousOrientation: UIDeviceOrientation?
     private var orientationPublisher = NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
-
-    var shouldRefresh: Bool {
-        isNext || brushupTimer.secondsElapsed <= 0
-    }
     
-    init(goMainView: Binding<Bool>, isResume: Binding<Bool>, minutes: Binding<Int>, isMonochrone: Binding<Bool>, isPlaying: Binding<Bool>) {
+    init(goMainView: Binding<Bool>, isResume: Binding<Bool>, isPlaying: Binding<Bool>) {
         self._goMainView = goMainView
         self._isResume = isResume
-        self._minutes = minutes
-        self._isMonochrone = isMonochrone
         self._isPlaying = isPlaying
     }
     public var body: some View {
         ZStack(alignment: .bottom){
-            VStack(spacing: 0){
-                // Reflect image to the screen
-                AsyncImage(url: photoManager.photoURL) { image in
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    AsyncImage(url: photoManager.photoURL) { image in
                         image
                             .resizable()
-                            .scaledToFill()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                            .ignoresSafeArea(.all)
-                            .grayscale(isMonochrone ? 1.0 : 0.0)
-
-                } placeholder: {
-                    ProgressView()
-                        .scaleEffect(x: 2.0, y: 2.0, anchor: .center)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                        .ignoresSafeArea(.all)
+                    } placeholder: {
+                        ProgressView()
+                            .scaleEffect(x: 2.0, y: 2.0, anchor: .center)
+                    }
+                    .frame(height: geometry.size.height * 0.9)
+                    .grayscale(isMonochrome ? 1.0 : 0.0)
+                    
+                    TimerPlayView(isNext: $isNext, isPrevious: $isPrevious, isHome: $goMainView, isSettings: $isSettings, isPaused: $isPaused)
+                    .frame(height: geometry.size.height * 0.1)
+                    .sheet(isPresented: $isSettings) {
+                        Settings(isMonochrome: $isMonochrome)
+                            .presentationDetents([.medium, .large],
+                             selection: .constant(
+                                // iPhone: medium, iPad: large
+                                AppConstants.isiOS ?
+                                PresentationDetent.large :
+                                    PresentationDetent.medium
+                             ))
+                            .presentationDragIndicator(.visible)
+                            .background(AppConstants.spaceblack)
+                    }
                 }
-                //.ignoresSafeArea(.container, edges: .top)
-                //.ignoresSafeArea(.all)
-                //.frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.8, alignment: .top)
-                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.85, alignment: .top)
-                
-                
-                
-                TimerPlayView(isNext: $isNext, isPrevious: $isPrevious, isHome: $goMainView, isSettings: $isSettings, isPaused: $isPaused)
-                    //.id(isNext)
-                    //.id(brushupTimer.secondsElapsed)
-                    .ignoresSafeArea(.all)
-                    //.frame(maxHeight: .infinity, alignment: .bottom)
-                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.1 , alignment: .bottom)
-                    //.ignoresSafeArea(.container)
-                    //.padding(.horizontal, 20)
-                    .ignoresSafeArea(.container, edges: .bottom)
-
             }
-            .sheet(isPresented: $isSettings) {
-                Settings(isMonochrone: $isMonochrone, selectedNumber: $minutes)
-                    .presentationDetents([.medium, .large])
-                    .grayBackgroundStyle()
-            }
-            
-
+            .ignoresSafeArea()
         }//ZStack
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             UIDevice.current.beginGeneratingDeviceOrientationNotifications()
             isOrientationChanged(currentOrientation, previousOrientation)
+            isMonochrome = UserDefaults.standard.bool(forKey: "isMonochrome")
         }
         .task {
             if(!isResume){
@@ -184,52 +167,6 @@ public struct PhotoPlayerScreen: View {
                 isPaused = true
             }
         }
-
-//        .onChange(of: isPrevious){oldValue, newValue in
-//            guard newValue else { return }
-//            isPrevious = false
-//            print("previous button clicked")
-//            if(photoManager.isPreviousPhotoAvailable()){
-//                isPaused = false
-//                brushupTimer.stop()
-//                brushupTimer.reset()
-//                
-//                Task{
-//                    await photoManager.fetchPreviousPhoto()
-//                    brushupTimer.start()
-//                    brushupTimer.play()
-//                }
-//                print("previous photo loaded")
-//            }
-//        }
-//        .onChange(of: brushupTimer.secondsElapsed){
-//
-//            if(brushupTimer.secondsRemaining==0){
-//                brushupTimer.stop()
-//                isPaused = true
-//                //brushupTimer.reset()
-//                Task {
-//                    await photoManager.savePhotoData()
-//                    //await photoManager.fetchRandomPhoto()
-//                    //brushupTimer.start()//test
-//                    //brushupTimer.toggleTimer()//test
-//                }
-//                //brushupTimer.start()
-//            }
-//        }
-//        .onChange(of: isSettings){
-//            
-//            
-//            if isPlaying {
-//                brushupTimer.toggleTimer()
-//            }
-//
-//            let value = UserDefaults.standard.string(forKey: "minutes")
-//            if let minutes: Int = Int(value ?? "1"){
-//                self.minutes = minutes
-//            }
-//        }
-
         .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
             let newOrientation = UIDevice.current.orientation
             if newOrientation.isValidInterfaceOrientation && newOrientation != self.currentOrientation {
@@ -273,8 +210,8 @@ public struct PhotoPlayerScreen: View {
 
 #Preview {
     @Previewable @State var brushUpTimer = BrushUpTimer()
-    @Previewable @State var minutes: Int = 1
-    @Previewable @State var isMonochrone: Bool = true
+//    @Previewable @State var minutes: Int = 1
+//    @Previewable @State var isMonochrone: Bool = false
     
     // @Previewable @State var fireBaseService = FirebaseService()
     @Previewable @State var appServices = AppServices()
@@ -291,7 +228,7 @@ public struct PhotoPlayerScreen: View {
     @State var isResume: Bool = false
     @State var isPlaying: Bool = false
     
-    PhotoPlayerScreen(goMainView: $goMainView2, isResume: $isResume, minutes: $minutes, isMonochrone: $isMonochrone, isPlaying: $isPlaying)
+    PhotoPlayerScreen(goMainView: $goMainView2, isResume: $isResume, isPlaying: $isPlaying)
         .environment(brushUpTimer)
         .environment(unsplashPhotoManager)
         .environment(appServices)

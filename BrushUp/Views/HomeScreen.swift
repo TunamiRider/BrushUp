@@ -42,7 +42,6 @@ struct HomeScreen: View {
     
     var body: some View {
         ZStack {
-            AppConstants.spaceblack.ignoresSafeArea()
             VStack() {
                 VStack(alignment: .leading, spacing: 4){
                     Text("Let's Brush Up!")
@@ -55,7 +54,10 @@ struct HomeScreen: View {
                             .font(.subheadline)
                             .foregroundStyle(.white)
                         
-                        Spacer()
+                        
+                        if !AppConstants.isiOS {
+                            Spacer()
+                        }
 
                         Button("Edit Goal") {
                             showingGoalSheet.toggle()
@@ -105,7 +107,6 @@ struct HomeScreen: View {
             }
             .padding(.horizontal)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            //.background(AppConstants.spaceblack.ignoresSafeArea())
             .task{
                 do {
                     historyViewModel = HistoryViewModel(firebaseService: services.firebaseService)
@@ -116,7 +117,6 @@ struct HomeScreen: View {
                 updateProgress()
             }
         }
-        //.background(AppConstants.spaceblack.ignoresSafeArea())
     }
     
     @ViewBuilder

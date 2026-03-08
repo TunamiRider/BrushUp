@@ -40,9 +40,6 @@ struct HistoryView: View {
     
     var body: some View {
         ZStack {
-            AppConstants.spaceblack
-                .ignoresSafeArea()
-            
             VStack(spacing: 0){
                 VStack {
                     HStack(spacing: 20) {
@@ -69,10 +66,6 @@ struct HistoryView: View {
                                 }
                         }
                         .transition(.scale.combined(with: .opacity))
-                        
-                        
-                        
-                        
                     }
                     //.imageScale(.large)
                     .foregroundStyle(.gray)
@@ -110,9 +103,6 @@ struct HistoryView: View {
                 }
             }
         }
-        //.background(AppConstants.spaceblack.edgesIgnoringSafeArea(.all))
-        
-        // VStack Outest
     }
     
     private struct FullScreenImageView: View {
