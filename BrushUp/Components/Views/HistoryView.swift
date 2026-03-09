@@ -14,7 +14,8 @@ struct HistoryView: View {
     @State private var historyViewModel: HistoryViewModel?
     @State private var showFullScreen = false
     @State private var selectedURL: URL? = nil
-    @State private var isWeeklyList: Bool = true
+    //@State private var isWeeklyList: Bool = true
+    @Binding var isWeeklyList: Bool
     @State private var sortedList: [(key: String, value: [URL])] = [] // Array of Tuple
     
     private func getDailyActivityHistoryList(){
@@ -47,10 +48,12 @@ struct HistoryView: View {
                         Text(isWeeklyList ? "Daily History" : "Monthly History")
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .foregroundStyle(.white)
+                            .font(AppConstants.boldRoundedFont)
                         
                         Group {
                             isWeeklyList ? Image(systemName: "calendar.circle")
                                 .foregroundStyle(isWeeklyList ? .white : .gray)
+                                .font(AppConstants.boldRoundedFont)
                                 .onTapGesture {
                                     showFullScreen = false
                                     isWeeklyList = false
@@ -59,6 +62,7 @@ struct HistoryView: View {
                             
                             :Image(systemName: "calendar")
                                 .foregroundStyle(isWeeklyList ? .gray: .white)
+                                .font(AppConstants.boldRoundedFont)
                                 .onTapGesture {
                                     showFullScreen = false
                                     isWeeklyList = true
@@ -74,36 +78,91 @@ struct HistoryView: View {
                 }
                 
                 ScrollView {// Vertical scroll for the whole grid
+                    
+                    //Group {
                     LazyVGrid(columns: rows, spacing: 10) {
                         if isWeeklyList {
-                            retrieveWeeklyHistoryList()
+                            retrieveWeeklyHistoryList2()
                                 .transition(.asymmetric(
                                     insertion: .move(edge: .leading).combined(with: .opacity),
                                     removal: .move(edge: .trailing).combined(with: .opacity)
                                 ))
                         } else {
-                            retrieveYearlyHistoryList()
+                            retrieveYearlyHistoryList2()
                                 .transition(.asymmetric(
                                     insertion: .move(edge: .trailing).combined(with: .opacity),
                                     removal: .move(edge: .leading).combined(with: .opacity)
                                 ))
                         }
                     }
+                    .animation(.easeInOut(duration: 0.4), value: isWeeklyList)
                 }
-                .animation(.easeInOut(duration: 0.4), value: isWeeklyList)
+                
                 .task {
                     do {
                         showFullScreen = false
                         historyViewModel = HistoryViewModel(firebaseService: services.firebaseService)
                         await historyViewModel?.loadHistory()
                         getDailyActivityHistoryList()
-                    } catch {
-                        print("Failed to load data: \(error)")
                     }
+//                    catch {
+//                        print("Failed to load data: \(error)")
+//                    }
                 }
             }
         }
     }
+    
+    @ViewBuilder
+    fileprivate func retrieveWeeklyHistoryList2() -> some View {
+        LazyVStack(alignment: .leading, spacing: 10) {
+            ForEach(sortedList, id: \.key) { key, urls in
+                // Header
+                Text(key)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 15)
+                    .foregroundStyle(.white)
+                    .font(AppConstants.mediumRoundedFont)
+                
+                // Horizontal scroll row (wrapped to match yearly structure)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHGrid(rows: [GridItem(.fixed(80))]) {
+                        ForEach(urls, id: \.self) { item in
+                            imageCell(for: item)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                .frame(height: 120)
+            }
+        }
+    }
+
+    @ViewBuilder
+    fileprivate func retrieveYearlyHistoryList2() -> some View {
+        LazyVStack(alignment: .leading, spacing: 10) {
+            ForEach(Array(sortedList), id: \.key) { key, urls in
+                Text(key)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 15)
+                    .foregroundStyle(.white)
+                    .font(AppConstants.mediumRoundedFont)
+                
+                // 3-per-row groups
+                ForEach(Array(stride(from: 0, to: urls.count, by: 3).map{ i in
+                    Array(urls[i..<Swift.min(i + 3, urls.count)])
+                }), id: \.first!) { group in
+                    LazyHGrid(rows: [GridItem(.fixed(80))], spacing: 10) {
+                        ForEach(group, id: \.self) { url in
+                            imageCell(for: url)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            }
+        }
+    }
+
     
     private struct FullScreenImageView: View {
         @Binding var showFullScreen: Bool
@@ -117,22 +176,30 @@ struct HistoryView: View {
                 AsyncImage(url: selectedURL!) { image in
                     image
                         .resizable()
-                        .scaledToFit()
+                        .scaledToFill()
+                        .clipped()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .gesture(
                             TapGesture().onEnded { showFullScreen = false } // Dismiss on tap
                         )
                 } placeholder: {
-                    ProgressView().tint(.white)
+                    ProgressView()
+                        .tint(.white)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 Button {
                     showFullScreen = false
                 } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.largeTitle)
-                        .foregroundColor(.white)
-                        .padding()
+//                    Image(systemName: "xmark.circle.fill")
+//                        .font(.largeTitle)
+//                        .foregroundColor(.white)
+//                        .frame(width: 44, height: 44)
+//                        .background(.black.opacity(1))
+//                        .clipShape(Circle())
+//                        .padding(8)  // Screen edge spacing
                 }
             }
+            .ignoresSafeArea()
         }
     }
     
@@ -145,8 +212,8 @@ struct HistoryView: View {
                 .padding(.vertical, 0)
                 .padding(.leading, 15)
                 .foregroundStyle(.white)
-            ScrollViewReader { proxy in
-                ZStack{
+            //ScrollViewReader { proxy in
+                //ZStack{
                     ScrollView(.horizontal, showsIndicators: false) {
                         
                         LazyHGrid(rows: [GridItem(.fixed(80))]) {
@@ -158,14 +225,15 @@ struct HistoryView: View {
                         .padding(.horizontal)
                     }
                     .frame(height: 120)
-                }// ZStack
-            } //ScrollViewReader
+
+                //}// ZStack
+            //} //ScrollViewReader
         }
     }
     
     @ViewBuilder
     fileprivate func retrieveYearlyHistoryList() -> some View {
-        ScrollView {
+        //ScrollView {
             LazyVStack(alignment: .leading, spacing: 10){
                 ForEach(Array(sortedList), id: \.key) { (key, urls) in
                     
@@ -186,7 +254,7 @@ struct HistoryView: View {
                     }
                 }
             }
-        }
+        //}
     }
     
     @ViewBuilder
@@ -197,14 +265,15 @@ struct HistoryView: View {
                 .scaledToFill()
                 .onTapGesture {
                     guard !showFullScreen else { return }
-                    // showFullScreen = true
+                    showFullScreen = true
                     selectedURL = url
                 }
         } placeholder: {
             ProgressView()
         }
         .fullScreenCover(isPresented: $showFullScreen) {
-            FullScreenImageView(showFullScreen: $showFullScreen, selectedURL: $selectedURL)
+                FullScreenImageView(showFullScreen: $showFullScreen, selectedURL: $selectedURL)
+            
         }
         .frame(width: 100, height: 100)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
@@ -215,8 +284,9 @@ struct HistoryView: View {
     
 }
 
-//#Preview {
-//    //@Previewable @State var firebaseServiceModel = FirebaseService()
-//    @Previewable @State var appServices = AppServices()
-//    HistoryView().environment(appServices)            //.background(AppConstants.spaceblack.edgesIgnoringSafeArea(.all))
-//}
+#Preview {
+    //@Previewable @State var firebaseServiceModel = FirebaseService()
+    @Previewable @State var appServices = AppServices()
+    @Previewable @State var isWeeklyList: Bool = true
+    HistoryView(isWeeklyList: $isWeeklyList).environment(appServices)            .background(AppConstants.spaceblack.edgesIgnoringSafeArea(.all))
+}

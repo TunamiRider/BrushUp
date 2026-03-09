@@ -46,15 +46,18 @@ public struct PhotoPlayerScreen: View {
                     AsyncImage(url: photoManager.photoURL) { image in
                         image
                             .resizable()
+                            .scaledToFill()
+                            .frame(height: geometry.size.height * 0.9)
+                            .clipped()
                     } placeholder: {
                         ProgressView()
                             .scaleEffect(x: 2.0, y: 2.0, anchor: .center)
+                            .frame(height: geometry.size.height * 0.9)
                     }
-                    .frame(height: geometry.size.height * 0.9)
                     .grayscale(isMonochrome ? 1.0 : 0.0)
+                
                     
                     TimerPlayView(isNext: $isNext, isPrevious: $isPrevious, isHome: $goMainView, isSettings: $isSettings, isPaused: $isPaused)
-                    .frame(height: geometry.size.height * 0.1)
                     .sheet(isPresented: $isSettings) {
                         Settings(isMonochrome: $isMonochrome)
                             .presentationDetents([.medium, .large],
@@ -68,6 +71,7 @@ public struct PhotoPlayerScreen: View {
                             .background(AppConstants.spaceblack)
                     }
                 }
+                .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
             }
             .ignoresSafeArea()
         }//ZStack

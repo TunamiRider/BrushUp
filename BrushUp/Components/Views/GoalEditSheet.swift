@@ -23,7 +23,7 @@ struct GoalEditSheet: View {
                     HStack {
                         Button(action: { showingGoalSheet.toggle() }) {
                             Image(systemName: "xmark.circle.fill")
-                                .font(.system(size: 28, weight: .bold))
+                                .font(AppConstants.boldRoundedFont)
                                 .foregroundColor(.white)
                                 .foregroundStyle(.gray)
                         }
@@ -32,7 +32,7 @@ struct GoalEditSheet: View {
                         Spacer()
                         
                         Text("Edit Goal")
-                            .font(.title2)
+                            .font(AppConstants.mediumRoundedFont)
                             .foregroundStyle(.white)
                         
                         Spacer()
@@ -45,9 +45,10 @@ struct GoalEditSheet: View {
                 Section {
                     HStack {
                         Text("Drawings")
+                            .font(AppConstants.mediumRoundedFont)
                         Spacer()
                         Text("\(Int(countDrawings))")
-                            .font(.headline)
+                            .font(AppConstants.mediumRoundedFont)
                         VStack(spacing: 0) {
                             // Up arrow (top)
                             Button(action: {
@@ -55,6 +56,7 @@ struct GoalEditSheet: View {
                             }) {
                                 Image(systemName: "chevron.up")
                                     .clipShape(Circle())
+                                    .font(AppConstants.mediumRoundedFont)
                             }
                             .buttonStyle(PlainButtonStyle())
                             
@@ -64,6 +66,7 @@ struct GoalEditSheet: View {
                             }) {
                                 Image(systemName: "chevron.down")
                                     .clipShape(Circle())
+                                    .font(AppConstants.mediumRoundedFont)
                             }
                             .buttonStyle(PlainButtonStyle())
                         }
@@ -71,11 +74,12 @@ struct GoalEditSheet: View {
                     
                     HStack {
                         Text("Frequency")
+                            .font(AppConstants.mediumRoundedFont)
 
                         Spacer()
 
                         Text(frequency.rawValue)
-                            .font(.headline)
+                            .font(AppConstants.mediumRoundedFont)
 
                         VStack(spacing: 0) {
                             // Up arrow
@@ -85,6 +89,7 @@ struct GoalEditSheet: View {
                             } label: {
                                 Image(systemName: "chevron.up")
                                     .clipShape(Circle())
+                                    .font(AppConstants.mediumRoundedFont)
                             }
                             .buttonStyle(.plain)
 
@@ -95,6 +100,7 @@ struct GoalEditSheet: View {
                             } label: {
                                 Image(systemName: "chevron.down")
                                     .clipShape(Circle())
+                                    .font(AppConstants.mediumRoundedFont)
                             }
                             .buttonStyle(.plain)
                         }
@@ -105,9 +111,11 @@ struct GoalEditSheet: View {
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.gray.opacity(0.2))
                 
+                
             }
             .scrollContentBackground(.hidden)  // iOS 16+
             .listSectionSpacing(8)
+            .interactiveDismissDisabled(AppConstants.isiPad ? true : false)
 
         }
         .onChange(of: countDrawings){

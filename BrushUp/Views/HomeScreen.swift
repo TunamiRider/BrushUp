@@ -18,12 +18,17 @@ struct HomeScreen: View {
     
     @Binding var goMainView: Bool
     @Binding var isResume: Bool
-
+    @State private var animateDismiss = false
+    //@State var starPositions: [CGSize] = []
     
     private var reachedGoals: Int {
         return max(0, min(countDrawings, progressCounter))
 
     }
+    private var isGoMainView: Bool {
+        !goMainView
+    }
+    
 
     private var leftToReach: Int {
         return max(0, progressCounter>AppConstants.maximumDrawingGoal ? (AppConstants.maximumDrawingGoal-countDrawings) : progressCounter - countDrawings)
@@ -45,13 +50,18 @@ struct HomeScreen: View {
             VStack() {
                 VStack(alignment: .leading, spacing: 4){
                     Text("Let's Brush Up!")
-                        .font(.title2)
-                        .fontWeight(.semibold)
+                        .font(AppConstants.boldRoundedFont)
                         .foregroundStyle(.white)
                     
                     HStack(spacing: 8) {
+                        
+                        Image("Target")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 24, height: 24)
+                        
                         Text("Progress: \(progressCounter)/\(countDrawings) drawings")
-                            .font(.subheadline)
+                            .font(AppConstants.mediumRoundedFont)
                             .foregroundStyle(.white)
                         
                         
@@ -62,14 +72,14 @@ struct HomeScreen: View {
                         Button("Edit Goal") {
                             showingGoalSheet.toggle()
                         }
-                        .font(.subheadline)
-                        .foregroundColor(Color(red: 0.78, green: 0.36, blue: 0.50))
+                        .font(AppConstants.mediumRoundedFont)
+                        .foregroundColor(AppConstants.dustypink)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
                         .cornerRadius(8)
                         
                     }
-                    
+
                     makeProgressBar()
                     
                 }
@@ -102,6 +112,9 @@ struct HomeScreen: View {
 //                            )
                 Spacer()
                 
+                
+                makeMascot2()
+                
                 createStartButton().disabled(showingGoalSheet).padding(.bottom, 10)
                 
             }
@@ -125,7 +138,7 @@ struct HomeScreen: View {
             goMainView = true
         }) {
             Text(isResume ? "Resume" : "Start Drawing")
-                .font(.system(size: 24))
+                .font(AppConstants.boldRoundedFont)
                 .padding(.vertical, 18)
                 .padding(.horizontal, 60)
             
@@ -212,22 +225,176 @@ struct HomeScreen: View {
                 .foregroundColor(.yellow.opacity(0.8))
         }
     }
+
+    @ViewBuilder
+    fileprivate func makeMascot() -> some View {
+        GeometryReader { geometry in
+            Image("Mascot")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 200, height: 200)
+                .overlay {
+                    ForEach(0..<leftToReach, id: \.self) { index in
+                        let angle = Double(index) * 36 * .pi / 180  // Evenly spaced angles
+                        let radius: CGFloat = 90
+                        let offset = CGSize(
+                            width: cos(angle) * radius,
+                            height: sin(angle) * radius
+                        )
+                        
+                        Star(points: 5)
+                            .foregroundStyle(.yellow)
+                            .frame(width: 16, height: 16)
+                            .opacity(0.8)
+                            .offset(offset)
+                    }
+                }
+        }
+        .frame(width: 200, height: 200)  // Match image frame
+    }
+    
+//    @ViewBuilder
+//    fileprivate func makeMascot2() -> some View {
+//        GeometryReader { geometry in
+//            Image("Mascot")
+//                .resizable()
+//                .aspectRatio(contentMode: .fit)
+//                .frame(width: 200, height: 200)
+//                .overlay {
+//                    ForEach(0..<leftToReach, id: \.self) { index in
+//                        let angle = Double(index) * 36 * .pi / 180
+//                        let radius: CGFloat = animateDismiss ? 110 : 90
+//                        let offset = CGSize(
+//                            width: cos(angle) * radius,
+//                            height: sin(angle) * radius
+//                        )
+//                        
+//                        Star(points: 5)
+//                            .foregroundStyle(.yellow)
+//                            .frame(width: 16, height: 16)
+//                            .opacity(animateDismiss ? 0 : 0.8)
+//                            .offset(offset)
+//                            .rotationEffect(.degrees(animateDismiss ? 720 : 0))  // Stars spin
+//                    }
+//                }
+//        }
+//        .frame(width: 200, height: 200)
+//        // Removed: .rotationEffect(.degrees(animateDismiss ? 360 : 0))
+//        .onChange(of: showingGoalSheet) { oldValue, newValue in
+//            if !newValue {
+//                withAnimation(.easeInOut(duration: 1.2)) {
+//                    animateDismiss = true
+//                }
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+//                    animateDismiss = false
+//                }
+//            }
+//        }
+//    }
+    
+    @ViewBuilder
+    fileprivate func makeMascot2() -> some View {
+        let mascotImage = Image("Mascot")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 200, height: 200)
+        
+        let starOverlay = Group {
+            ForEachStars()
+        }
+        
+        mascotImage
+            .overlay(starOverlay)
+            .frame(width: 200, height: 200)
+            .onChange(of: showingGoalSheet) { oldValue, newValue in
+                if !newValue {
+                    withAnimation(.easeInOut(duration: 1.2)) {
+                        animateDismiss = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                        animateDismiss = false
+                    }
+                }
+            }
+            .onChange(of: isGoMainView) { oldValue, newValue in
+                if !newValue {
+                    withAnimation(.easeInOut(duration: 10)) {
+                        animateDismiss = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                        animateDismiss = false
+                    }
+                }
+            }
+
+    }
+
+    @ViewBuilder
+    private func ForEachStars() -> some View {
+        ForEach(0..<leftToReach, id: \.self) { index in
+            StarView(index: index)
+        }
+    }
+
+    @ViewBuilder
+    private func StarView(index: Int) -> some View {
+        let angle = Double(index) * 36 * .pi / 180
+        let radius: CGFloat = animateDismiss ? 110 : 90
+        let offset = CGSize(
+            width: cos(angle) * radius,
+            height: sin(angle) * radius
+        )
+        
+        Star(points: 5)
+            .foregroundStyle(.yellow)
+            .frame(width: 16, height: 16)
+            .opacity(animateDismiss ? 0 : 0.8)
+            .offset(offset)
+            .rotationEffect(.degrees(animateDismiss ? 720 : 0))
+    }
+    struct Star: Shape {
+        let points: Int
+        
+        func path(in rect: CGRect) -> Path {
+            var path = Path()
+            let center = CGPoint(x: rect.midX, y: rect.midY)
+            let radius: CGFloat = min(rect.width, rect.height) * 0.4
+            
+            for i in 0..<points * 2 {
+                let angle = CGFloat.pi * 2 * Double(i) / Double(points * 2)
+                let radiusOffset = (i % 2 == 0) ? radius : radius * 0.5
+                let point = CGPoint(
+                    x: center.x + cos(angle) * radiusOffset,
+                    y: center.y + sin(angle) * radiusOffset
+                )
+                
+                if i == 0 {
+                    path.move(to: point)
+                } else {
+                    path.addLine(to: point)
+                }
+            }
+            path.closeSubpath()
+            return path
+        }
+    }
+    
 }
 
-//#Preview {
-//     
-//    @Previewable @State var showingGoalSheet = true
-//    @Previewable @State var countDrawings = 0
-//    @Previewable @State var frequency = Frequency.day
-//    @Previewable @State  var goMainView = false
-//    @Previewable @State var isResume = false
-//    let appServices = AppServices()
-//    let unsplashPhotoManager = UnsplashPhotoManager(
-//        unsplashService: appServices.unsplashService,
-//        firebaseService: appServices.firebaseService
-//    )
-//    
-//    HomeScreen(goMainView: $goMainView, isResume: $isResume)
-//        .environment(appServices)
-//}
+#Preview {
+     
+    @Previewable @State var showingGoalSheet = true
+    @Previewable @State var countDrawings = 0
+    @Previewable @State var frequency = Frequency.day
+    @Previewable @State  var goMainView = false
+    @Previewable @State var isResume = false
+    let appServices = AppServices()
+    let unsplashPhotoManager = UnsplashPhotoManager(
+        unsplashService: appServices.unsplashService,
+        firebaseService: appServices.firebaseService
+    )
+    
+    HomeScreen(goMainView: $goMainView, isResume: $isResume)
+        .environment(appServices).background(AppConstants.spaceblack)
+}
 

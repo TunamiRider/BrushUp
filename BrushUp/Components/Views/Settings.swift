@@ -16,6 +16,7 @@ struct Settings: View {
             Label("Settings", systemImage: "paintbrush")
                 .imageScale(.large)
                 .foregroundColor(.white)
+                .font(AppConstants.mediumRoundedFont)
             //Divider()
             VStack {
                 MinuteSelector()
@@ -92,7 +93,9 @@ struct Settings: View {
     fileprivate func makeMonochromeView() -> some View {
         Toggle(isOn: $isMonochrome) {
             Label {
-                Text("Monochrome").foregroundColor(.white)
+                Text("Monochrome")
+                    .foregroundColor(.white)
+                    .font(AppConstants.mediumRoundedFont)
             } icon: {
 //                Image(systemName: "snowflake")
 //                    .font(.system(size: 16))
@@ -111,6 +114,6 @@ struct Settings: View {
 
 #Preview {
     @Previewable @State var isMonochrome: Bool = false
-    Settings(isMonochrome: $isMonochrome).scrollDisabled(true)
+    Settings(isMonochrome: $isMonochrome).scrollDisabled(true).background(AppConstants.spaceblack)
 }
 

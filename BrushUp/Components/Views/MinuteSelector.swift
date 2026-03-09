@@ -13,9 +13,8 @@ struct MinuteSelector: View {
         VStack(spacing: 0) {
             HStack(alignment: .center) {
                 Text("Time")
-                    .font(.headline)
-                    .fontWeight(.semibold)
                     .foregroundStyle(.white)
+                    .font(AppConstants.mediumRoundedFont)
                 
                 Spacer()
                 
@@ -24,7 +23,7 @@ struct MinuteSelector: View {
                     Picker("Number", selection: $selectedNumber) {
                         ForEach(AppConstants.minutesList, id: \.self) { number in
                             Text("\(number) minutes")
-                                .font(.system(size: 20, weight: .medium, design: .rounded))
+                                .font(AppConstants.mediumRoundedFont)
                                 .foregroundStyle(.white)
                                 .tag(number)
                         }
@@ -41,7 +40,7 @@ struct MinuteSelector: View {
                             }
                         }) {
                             Image(systemName: "chevron.up")
-                                .font(.system(size: 16))
+                                .font(AppConstants.mediumRoundedFont)
                                 .foregroundStyle(selectedNumber == AppConstants.minutesList.first ? .gray: .white)
                                 .frame(width: 6, height: 6)
                         }
@@ -54,7 +53,7 @@ struct MinuteSelector: View {
                             }
                         }) {
                             Image(systemName: "chevron.down")
-                                .font(.system(size: 16))
+                                .font(AppConstants.mediumRoundedFont)
                                 .foregroundStyle(selectedNumber == AppConstants.minutesList.last ? .gray: .white)
                                 .frame(width: 6, height: 6)
                         }

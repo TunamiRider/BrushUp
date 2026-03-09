@@ -28,6 +28,12 @@ struct AppConstants {
     static let minutesList = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
     
     static let maximumDrawingGoal = 10
+    static var mediumRoundedFont: Font {
+        .system(size: 20, weight: .medium, design: .rounded)
+    }
+    static var boldRoundedFont: Font {
+        .system(size: 28, weight: .bold, design: .rounded)
+    }
     
     @MainActor
     static let isiOS: Bool = {
@@ -40,6 +46,11 @@ struct AppConstants {
         return false
         #endif
     }()
+    
+    @MainActor
+    static let isiPad: Bool = {
+            UIDevice.current.userInterfaceIdiom == .pad
+    }()
 }
 
 enum Frequency: String, CaseIterable, Identifiable {
@@ -50,15 +61,40 @@ enum Frequency: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-enum Tab: String, CaseIterable {
-    case home, history, settings
+//enum Tab: String, CaseIterable {
+//    case home, history, settings
+//    
+//    var title: String { rawValue.capitalized }
+//    var image: String {
+//        switch self {
+//        case .home: return "house"
+//        case .history: return "clock.arrow.circlepath"
+//        case .settings: return "gear"
+//        }
+//    }
+//}
+
+
+enum Tab: Int, CaseIterable, Identifiable {
+    case home = 0
+    case history = 1
+    case settings = 2
     
-    var title: String { rawValue.capitalized }
     var image: String {
         switch self {
         case .home: return "house"
-        case .history: return "clock.arrow.circlepath"
+        case .history: return "clock.fill"
         case .settings: return "gear"
         }
     }
+    
+    var title: String {
+        switch self {
+        case .home: return "Home"
+        case .history: return "History"
+        case .settings: return "Settings"
+        }
+    }
+    
+    var id: Int { rawValue }
 }

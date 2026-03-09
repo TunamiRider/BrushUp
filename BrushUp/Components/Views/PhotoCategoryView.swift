@@ -34,10 +34,14 @@ struct PhotoCategoryView: View {
     
     @ViewBuilder
     fileprivate func listCategories() -> some View {
-        if photoCategoryViewModel.photoCategoryGrid.isEmpty{
+        if photoCategoryViewModel.photoCategoryGrid.isEmpty {
+            Image("Mascot")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 200, height: 200)
+            
             Text("No tags applied.")
-                .font(.title3)
-                .fontWeight(.medium)
+                .font(AppConstants.mediumRoundedFont)
                 .foregroundStyle(.white.opacity(0.6))
         }
         ForEach(photoCategoryViewModel.photoCategoryGrid, id:\.self){ rows in
@@ -71,6 +75,14 @@ struct PhotoCategoryView: View {
                 }
             }
         }
+        
+        if !photoCategoryViewModel.photoCategoryGrid.isEmpty {
+            Image("Mascot")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 200, height: 200)
+                .offset(x: 35)
+        }
     }
     @ViewBuilder
     fileprivate func photoSearch() -> some View {
@@ -80,7 +92,9 @@ struct PhotoCategoryView: View {
             Image(systemName: "tag")
                 .foregroundStyle(.gray.opacity(0.9))
             
-            TextField("", text: $tagText, prompt: Text("Enter Tag...").foregroundStyle(.gray.opacity(0.9)))
+            TextField("", text: $tagText, prompt: Text("Enter Tag...")
+                .foregroundStyle(.gray.opacity(0.9)))
+                .font(AppConstants.mediumRoundedFont)
                 .foregroundStyle(.gray.opacity(0.9))
                 .tint(.gray.opacity(0.9))
                 .textInputAutocapitalization(.never)
@@ -105,7 +119,7 @@ struct PhotoCategoryView: View {
             tagText = ""
         }) {
             Image(systemName: "multiply.circle.fill")
-                .font(.system(size: 18))
+                .font(AppConstants.mediumRoundedFont)
                 .foregroundColor(AppConstants.spaceblack.opacity(0.6))
                 .padding(1)
                 .background(
@@ -118,9 +132,9 @@ struct PhotoCategoryView: View {
     }
 }
 
-//#Preview {
-//    ZStack{
-//        PhotoCategoryView()
-//    }.background(AppConstants.spaceblack.ignoresSafeArea())
-//    
-//}
+#Preview {
+    ZStack{
+        PhotoCategoryView()
+    }.background(AppConstants.spaceblack.ignoresSafeArea())
+    
+}
