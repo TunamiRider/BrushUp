@@ -29,12 +29,27 @@ struct TimerPlayView: View {
     @Binding var isSettings: Bool
     
     @Binding var isPaused: Bool
+    @Binding var isFinished: Bool
     @State private var dimTimer: Timer?
-
+    @State private var fillProgress: CGFloat = 0.0
     var body: some View {
         ZStack {
             AppConstants.spaceblack
                 .ignoresSafeArea()
+            
+            // Right-to-left fill (edge to edge)
+            GeometryReader { geo in
+                LinearGradient(
+                    colors: [.yellow.opacity(0.3), .orange.opacity(0.5)],
+                    startPoint: .trailing,
+                    endPoint: .leading
+                )
+                .frame(width: fillProgress * geo.size.width,
+                       height: geo.size.height)
+                .frame(maxWidth: .infinity, alignment: .trailing)  // Anchors to RIGHT edge
+            }
+            .ignoresSafeArea()
+            
             //GeometryReader { geometry in
                 VStack{
                     //Spacer()
@@ -168,6 +183,8 @@ struct TimerPlayView: View {
                     isDimmed = false
                 }
             }
+    
+
 //            .onChange(of: isNext){ _, newValue in
 //                guard newValue else { return }
 //                
@@ -181,7 +198,45 @@ struct TimerPlayView: View {
 //                isNext.toggle()
 //                isPaused = true
 //            }
+
+//            GeometryReader { geo in
+//                LinearGradient(
+//                    colors: [Color.pink.opacity(0.8), Color.pink.opacity(0.8)],
+//                    startPoint: .trailing,
+//                    endPoint: .leading
+//                )
+//                .frame(width: geo.size.width, height: geo.size.height)
+//                .mask(Rectangle().frame(width: fillProgress * geo.size.width, height: geo.size.height, alignment: .trailing))
+//            }
+
+
+        } // ZStack
+        .animation(.easeInOut(duration: 2.0), value: fillProgress)
+        .onChange(of: isFinished){_, newValue in
+                //guard newValue else { return }
+            
+            if newValue {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                    withAnimation(.easeInOut(duration: 2.0)){
+                        fillProgress = 1.0
+                    }
+                }
+            }else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                    withAnimation(.easeInOut(duration: 2.0)){
+                        fillProgress = 0.0
+                    }
+                }
+            }
+
         }
+//        .onAppear {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//                withAnimation(.easeInOut(duration: 2.0)) {
+//                    fillProgress = 1.0
+//                }
+//            }
+//        }
         
     }
 }
@@ -194,7 +249,8 @@ struct TimerPlayView: View {
     @Previewable @State var isHome: Bool = false
     @Previewable @State var isSettings: Bool = false
     @Previewable @State var isPaused2: Bool = false
+    @Previewable @State var isFinished: Bool = false
     
-    TimerPlayView(isNext: $isNext, isPrevious: $isPrevious, isHome: $isHome, isSettings: $isSettings, isPaused: $isPaused2).border(Color.red).environment(BrushUpTimer())
+    TimerPlayView(isNext: $isNext, isPrevious: $isPrevious, isHome: $isHome, isSettings: $isSettings, isPaused: $isPaused2, isFinished: $isFinished).border(Color.red).environment(BrushUpTimer())
 
 }

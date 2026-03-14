@@ -7,7 +7,7 @@
 import SwiftUI
 import SwiftData
 struct MinuteSelector: View {
-    @State var selectedNumber: Int = 1
+    @State var selectedNumber: Int = 5
     
     var body: some View {
         VStack(spacing: 0) {

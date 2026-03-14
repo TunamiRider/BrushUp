@@ -126,7 +126,7 @@ struct HistoryView: View {
                 
                 // Horizontal scroll row (wrapped to match yearly structure)
                 ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHGrid(rows: [GridItem(.fixed(80))]) {
+                    LazyHGrid(rows: [GridItem(.fixed(80))],spacing: 10) {
                         ForEach(urls, id: \.self) { item in
                             imageCell(for: item)
                         }
