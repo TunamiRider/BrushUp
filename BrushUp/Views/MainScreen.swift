@@ -14,34 +14,42 @@ struct MainScreen: View {
     @State private var isPlaying: Bool = false
     @State private var sidebarDragOffset: CGFloat = 0
     @State private var isWeeklyList: Bool = true
-    
+    private let frameSize:CGFloat = 32
     var body: some View {
-        
-        if isPhotoPlayerScreen {
-            PhotoPlayerScreen(goMainView: $isPhotoPlayerScreen, isResume: $isResume, isPlaying: $isPlaying)
-        }
-        else {
-            Group {
-                if AppConstants.isiPad {
-                    HStack(spacing: 0) {
-                        sidebarView
-                            .frame(width: isSidebarCollapsed ? 60 : 280)
-                            .animation(.easeInOut(duration: 0.3), value: isSidebarCollapsed)
+        ZStack {
+            
+            if isPhotoPlayerScreen {
+                PhotoPlayerScreen(goMainView: $isPhotoPlayerScreen, isResume: $isResume, isPlaying: $isPlaying)
+            }
+            else {
+                Group {
+                    if AppConstants.isiPad {
+                        HStack(spacing: 0) {
+                            sidebarView
+                                .frame(width: isSidebarCollapsed ? 60 : 280)
+                                .animation(.easeInOut(duration: 0.3), value: isSidebarCollapsed)
+                            
+                            Divider()
+                            tabContent
+                        }
+                    } else {
+                        VStack(spacing: 0) {
+                            tabContent
+                            bottomTabBar
+                        }
+                        .ignoresSafeArea(edges: .bottom)
                         
-                        Divider()
-                        tabContent
                     }
-                } else {
-                    VStack(spacing: 0) {
-                        tabContent
-                        bottomTabBar
-                    }
-                    .ignoresSafeArea(edges: .bottom)
                     
                 }
-                
+                .background(AppConstants.spaceblack)
             }
-            .background(AppConstants.spaceblack)
+        }
+        .onAppear {
+            let saved = UserDefaults.standard.integer(forKey: "minutes")
+            if saved == 0 {
+                UserDefaults.standard.set(5, forKey: "minutes")
+            }
         }
         
 //        ZStack {
@@ -112,9 +120,9 @@ struct MainScreen: View {
                     }
                 } label: {
                     Image(systemName: isSidebarCollapsed ? "arrow.right.circle.fill" : "arrow.left.circle.fill")
-                        .font(.title2)
+                        .font(AppConstants.boldRoundedFont)
                         .foregroundStyle(.white)
-                        .padding()
+                        .padding(.horizontal, 20)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .rotationEffect(.degrees(isSidebarCollapsed ? 0 : -0))
                         .animation(.easeInOut(duration: 0.3), value: isSidebarCollapsed)
@@ -133,11 +141,14 @@ struct MainScreen: View {
                         } label: {
                             HStack {
                                 Image(systemName: tab.image)
-                                    .frame(width: 24, height: 24)
-                                
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: frameSize, height: frameSize)
+                                    
+                                    
                                 if !isSidebarCollapsed {
                                     Text(tab.title)
-                                        .font(.body)
+                                        .font(AppConstants.boldRoundedFont)
                                         .transition(.asymmetric(
                                             insertion: .move(edge: .trailing).combined(with: .opacity),
                                             removal: .move(edge: .leading).combined(with: .opacity)

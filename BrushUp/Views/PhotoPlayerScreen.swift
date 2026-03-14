@@ -26,6 +26,7 @@ public struct PhotoPlayerScreen: View {
     @State private var isNext: Bool = false
     @State private var isPrevious = false
     @State private var isPaused: Bool = true
+    @State private var isFinished: Bool = false
 
     // private let player = AVPlayer.dingPlayer()
     @State private var uiScreenSize = UIScreen.main.bounds.size
@@ -39,25 +40,51 @@ public struct PhotoPlayerScreen: View {
         self._isResume = isResume
         self._isPlaying = isPlaying
     }
+    struct Star: Shape {
+        let points: Int
+        
+        func path(in rect: CGRect) -> Path {
+            var path = Path()
+            let center = CGPoint(x: rect.midX, y: rect.midY)
+            let radius: CGFloat = min(rect.width, rect.height) * 0.4
+            
+            for i in 0..<points * 2 {
+                let angle = CGFloat.pi * 2 * Double(i) / Double(points * 2)
+                let radiusOffset = (i % 2 == 0) ? radius : radius * 0.5
+                let point = CGPoint(
+                    x: center.x + cos(angle) * radiusOffset,
+                    y: center.y + sin(angle) * radiusOffset
+                )
+                
+                if i == 0 {
+                    path.move(to: point)
+                } else {
+                    path.addLine(to: point)
+                }
+            }
+            path.closeSubpath()
+            return path
+        }
+    }
     public var body: some View {
         ZStack(alignment: .bottom){
             GeometryReader { geometry in
                 VStack(spacing: 0) {
-                    AsyncImage(url: photoManager.photoURL) { image in
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(height: geometry.size.height * 0.9)
-                            .clipped()
-                    } placeholder: {
-                        ProgressView()
-                            .scaleEffect(x: 2.0, y: 2.0, anchor: .center)
-                            .frame(height: geometry.size.height * 0.9)
-                    }
-                    .grayscale(isMonochrome ? 1.0 : 0.0)
-                
-                    
-                    TimerPlayView(isNext: $isNext, isPrevious: $isPrevious, isHome: $goMainView, isSettings: $isSettings, isPaused: $isPaused)
+                        AsyncImage(url: photoManager.photoURL) { image in
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(height: geometry.size.height * 0.9)
+                                .clipped()
+
+                        } placeholder: {
+                            ProgressView()
+                                .scaleEffect(x: 2.0, y: 2.0, anchor: .center)
+                                .frame(height: geometry.size.height * 0.9)
+                        }
+                        .grayscale(isMonochrome ? 1.0 : 0.0)
+
+                    TimerPlayView(isNext: $isNext, isPrevious: $isPrevious, isHome: $goMainView, isSettings: $isSettings, isPaused: $isPaused, isFinished: $isFinished)
                     .sheet(isPresented: $isSettings) {
                         Settings(isMonochrome: $isMonochrome)
                             .presentationDetents([.medium, .large],
@@ -119,6 +146,7 @@ public struct PhotoPlayerScreen: View {
             
             isPaused = false
             isNext = false
+            isFinished = false
             brushupTimer.stop()
             brushupTimer.reset()
             
@@ -161,6 +189,7 @@ public struct PhotoPlayerScreen: View {
             if(brushupTimer.secondsRemaining==0){
                 //isPaused = true
                 brushupTimer.stop()
+                isFinished = true
                 Task {
                     await photoManager.savePhotoData()
                 }

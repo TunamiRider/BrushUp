@@ -20,6 +20,19 @@ struct HomeScreen: View {
     @Binding var isResume: Bool
     @State private var animateDismiss = false
     //@State var starPositions: [CGSize] = []
+    @State var showingTips = false
+    
+    @State var stats: [GoalStats] = []
+    @State var top3Categories: [CatStats] = []
+//    let top5Categories = [
+//        ("Top 3 categories painted", ["animal", "city", "food"])
+//    ]
+//    let stats = [
+//        ("Days you hit your goal", 6, "days"),
+//        ("Total Stars you earned", 5, "stars"),
+//        ("Total hours spent painting a day", 5.5, "h"),
+//        //("Total hours of breaks per day", 2.2, "h")
+//    ]
     
     private var reachedGoals: Int {
         return max(0, min(countDrawings, progressCounter))
@@ -28,7 +41,6 @@ struct HomeScreen: View {
     private var isGoMainView: Bool {
         !goMainView
     }
-    
 
     private var leftToReach: Int {
         return max(0, progressCounter>AppConstants.maximumDrawingGoal ? (AppConstants.maximumDrawingGoal-countDrawings) : progressCounter - countDrawings)
@@ -44,17 +56,81 @@ struct HomeScreen: View {
         frequency = rawFrequency
         progressCounter = count ?? 0
     }
+    private func updateStats() {
+        let basecountDrawings = UserDefaults.standard.integer(forKey: "countDrawings")
+        let count = historyViewModel?.countActivity(frequency: .day) ?? 0
+        let yearCount = historyViewModel?.countActivity(frequency: .year) ?? 0
+        let numOfStars = count - basecountDrawings
+        
+        let (hitDate, hitCount) = (UserDefaults.standard.string(forKey: "hitTheGoals") ?? "").dateCountParts()
+        let (starDate, starCount) = (UserDefaults.standard.string(forKey: "hitTheStars") ?? "").dateCountParts()
+        
+        let isHitTheGoal: Bool = count >= basecountDrawings
+        let isHitTheStar: Bool = numOfStars >= 1
+        
+        //validate date format
+        if !hitDate.isValidMMddyyyy {
+            //print("count \(count) : basecountDrawings \(basecountDrawings)")
+            //print(isHitTheGoal)
+            let strNewHitTheGoals = isHitTheGoal ? Date.mmddyyyyString + ":1" : Date.mmddyyyyString + ":0"
+            UserDefaults.standard.set(strNewHitTheGoals, forKey: "hitTheGoals")
+
+            //print("saved new hitTheGoals first time")
+        }
+        if !starDate.isValidMMddyyyy {
+            
+            let strNewHitTheStars = isHitTheStar ? Date.mmddyyyyString + ":" + String(numOfStars) : Date.mmddyyyyString + ":0"
+            UserDefaults.standard.set(strNewHitTheStars, forKey: "hitTheStars")
+
+            //print("saved new hitTheStars first time")
+        }
+        
+        if !hitDate.isValidMMddyyyy || !starDate.isValidMMddyyyy {
+            stats.append(GoalStats("Days you hit your goal", Double(0), "days"))
+            stats.append(GoalStats("Total Stars you earned", Double(0), "stars"))
+            stats.append(GoalStats("Paintings you've drawn", Double(yearCount), "paintings"))
+            top3Categories.append(CatStats("Top 3 categories painted", []))
+            return
+        }
+        let todayMidnight = Calendar.current.startOfDay(for: Date())
+
+        //hit the goal
+        if isHitTheGoal && hitDate.mmddyyyyDate! < todayMidnight {
+            
+            let strNewHitTheGoals = Date.mmddyyyyString + ":" + String(Int(hitCount)! + 1)
+            UserDefaults.standard.set(strNewHitTheGoals, forKey: "hitTheGoals")
+            //print("saved new hitTheGoals:  \(strNewHitTheGoals) : today \(todayMidnight)")
+        }
+  
+        //hit the stars
+        if  isHitTheStar && starDate.mmddyyyyDate! < todayMidnight {
+            
+            let strNewHitTheStars = Date.mmddyyyyString + ":" + String(Int(starCount)! + numOfStars)
+            UserDefaults.standard.set(strNewHitTheStars, forKey: "hitTheStars")
+            //print("saved new hitTheStars: \(strNewHitTheStars) : today \(todayMidnight)")
+        }
+        
+        let (_, hitCount2) = (UserDefaults.standard.string(forKey: "hitTheGoals") ?? "").dateCountParts()
+        let (_, starCount2) = (UserDefaults.standard.string(forKey: "hitTheStars") ?? "").dateCountParts()
+        
+        
+        stats.append(GoalStats("Days you hit your goal", Double(hitCount2) ?? 0.0, "days"))
+        stats.append(GoalStats("Total Stars you earned", Double(starCount2) ?? 0.0, "stars"))
+        stats.append(GoalStats("Paintings you've drawn", Double(yearCount), "paintings"))
+        top3Categories.append(CatStats("Top 3 categories painted", ["animal", "city", "food"]))
+    }
+
     
     var body: some View {
         ZStack {
             VStack() {
                 VStack(alignment: .leading, spacing: 4){
+                    
                     Text("Let's Brush Up!")
                         .font(AppConstants.boldRoundedFont)
                         .foregroundStyle(.white)
-                    
+                        .frame(maxWidth: .infinity)
                     HStack(spacing: 8) {
-                        
                         Image("Target")
                             .resizable()
                             .scaledToFit()
@@ -63,60 +139,82 @@ struct HomeScreen: View {
                         Text("Progress: \(progressCounter)/\(countDrawings) drawings")
                             .font(AppConstants.mediumRoundedFont)
                             .foregroundStyle(.white)
+                            .minimumScaleFactor(0.8)
+                            .lineLimit(1)
                         
-                        
-                        if !AppConstants.isiOS {
+                        if !AppConstants.isiPad {
                             Spacer()
                         }
+
 
                         Button("Edit Goal") {
                             showingGoalSheet.toggle()
                         }
                         .font(AppConstants.mediumRoundedFont)
                         .foregroundColor(AppConstants.dustypink)
-                        .padding(.horizontal, 12)
+                        //.padding(.horizontal, 32)
                         .padding(.vertical, 6)
+                        .minimumScaleFactor(0.8)
+                        .lineLimit(1)
                         .cornerRadius(8)
                         
-                    }
+                        
+                    }.frame(maxWidth: .infinity)
+                    
 
-                    makeProgressBar()
+                    makeProgressBar().frame(maxWidth: .infinity)
                     
-                }
-                .disabled(showingGoalSheet)
-                .sheet(isPresented: $showingGoalSheet, onDismiss: {
-                    updateProgress()
-                }) {
+
                     
-                    GoalEditSheet(countDrawings: $countDrawings, frequency: $frequency, showingGoalSheet: $showingGoalSheet)
-                        .presentationDetents([.medium])  // Half screen height
-                        .presentationDragIndicator(.visible)
-                        .presentationCornerRadius(20)
-                        .transition(.move(edge: .top).combined(with: .opacity))
-                }
+                    //makeTipsView().frame(maxWidth: .infinity)
+
+                    ActivityChart(dayValues: historyViewModel?.dayCount ?? [], monthValues: historyViewModel?.monthsCount ?? [])//.frame(maxWidth: .infinity)
+                    
+                    DailyActivityStat(goalStats: stats, top3Categories: top3Categories)
+                        //.frame(maxWidth: .infinity)
+
+                }//.frame(maxWidth: .infinity)
                 
-//                            .overlay(
-//                                Group {
-//                                    if showingGoalSheet {
-//                                        GoalEditSheet(countDrawings: $countDrawings, frequency: $frequency, showingGoalSheet: $showingGoalSheet)
-//                                        //SettingsView22(showingGoalSheet: $showingGoalSheet)
-//                                        .frame(height: 200)
-//                                        .cornerRadius(8)
-//                                        .offset(x: 0, y: buttonPosition.y + 80)
-//                                        .opacity(showingGoalSheet ? 1 : 0)
-//                                        .offset(x: showingGoalSheet ? 0 : 300)
-//                
-//                                        .animation(.easeInOut(duration: 0.8), value: showingGoalSheet)
-//                                    }
-//                                }
-//                            )
-                Spacer()
+                .disabled(showingGoalSheet)
+//                .sheet(isPresented: $showingGoalSheet, onDismiss: {
+//                    updateProgress()
+//                }) {
+//                    
+//                    GoalEditSheet(countDrawings: $countDrawings, frequency: $frequency, showingGoalSheet: $showingGoalSheet)
+//                        .presentationDetents([.medium])  // Half screen height
+//                        .presentationDragIndicator(.visible)
+//                        .presentationCornerRadius(20)
+//                        .transition(.move(edge: .top).combined(with: .opacity))
+//                }
+                
+                .overlay(
+                    Group {
+                        if showingGoalSheet {
+                            GoalEditSheet(countDrawings: $countDrawings, frequency: $frequency, showingGoalSheet: $showingGoalSheet)
+                                //.frame(height: 200)
+                                .offset(y: 80)
+                                .cornerRadius(8)
+                                .offset(x: 0, y: 0)
+                            //.opacity(showingGoalSheet ? 1 : 0)
+                                .offset(x: showingGoalSheet ? 0 : 200)
+                            
+                                .animation(.easeInOut(duration: 0.8), value: showingGoalSheet)
+                        }
+                    }
+                )
+                //Spacer()
+                
                 
                 
                 makeMascot2()
+                    
+                    .frame(height: max(50, UIScreen.main.bounds.height / 6))
+                    .frame(width: UIScreen.main.bounds.size.width / 3)
+                    //.border(Color.red)
                 
                 createStartButton().disabled(showingGoalSheet).padding(.bottom, 10)
-                
+                    .frame(width: .infinity)
+                Spacer()
             }
             .padding(.horizontal)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -124,10 +222,13 @@ struct HomeScreen: View {
                 do {
                     historyViewModel = HistoryViewModel(firebaseService: services.firebaseService)
                     await historyViewModel?.loadHistory()
-                } catch {
-                    print("Failed to load data: \(error)")
                 }
+//                catch {
+//                    print("Failed to load data: \(error)")
+//                }
                 updateProgress()
+                updateStats()
+                
             }
         }
     }
@@ -150,18 +251,20 @@ struct HomeScreen: View {
                         .stroke(.white, lineWidth: 1)
                         .overlay(
                             // Thinner lines for top-right & bottom-left corners
-                            RoundedRectangle(cornerRadius: 12)
+                            RoundedRectangle(cornerRadius: 40)
                                 .stroke(.white, lineWidth: 1)
                                 .clipShape(
                                     RoundedRectangle(cornerRadius: 40)
                                         .offset(x: 8, y: -8) // Top-right position
                                 )
                                 .clipShape(
-                                    RoundedRectangle(cornerRadius: 12)
+                                    RoundedRectangle(cornerRadius: 40)
                                         .offset(x: -8, y: 8) // Bottom-left position
                                 )
                         )
+                        
                 )
+                //.border(Color.cyan)
 //                .transition(.opacity.combined(with: .asymmetric(
 //                    insertion: .move(edge: .leading),
 //                    removal: .move(edge: .trailing))))
