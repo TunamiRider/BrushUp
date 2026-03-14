@@ -26,7 +26,8 @@ struct AppConstants {
     
     
     static let minutesList = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
-    
+    static let weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    static let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     static let maximumDrawingGoal = 10
     static var mediumRoundedFont: Font {
         .system(size: 20, weight: .medium, design: .rounded)
@@ -51,12 +52,19 @@ struct AppConstants {
     static let isiPad: Bool = {
             UIDevice.current.userInterfaceIdiom == .pad
     }()
+    
+    @MainActor
+    static let deviceScreenHeightScalingForBarChart: CGFloat = {
+        isiPad ? UIScreen.main.bounds.size.height / 6 : UIScreen.main.bounds.size.height / 8
+    }()
+    
 }
 
 enum Frequency: String, CaseIterable, Identifiable {
     case day = "Day"
     case week = "Week"
     case month = "Month"
+    case year = "Year"
 
     var id: String { rawValue }
 }
