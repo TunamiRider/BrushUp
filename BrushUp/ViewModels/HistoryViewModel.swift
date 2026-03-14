@@ -8,7 +8,7 @@ import Foundation
 @MainActor
 @Observable public final class HistoryViewModel {
     private let firebaseService: FirebaseService
-     var historyDataList: [HistoryRecord] = []
+    var historyDataList: [HistoryRecord] = []
     
     private var isLaoding = false
     private var fetchedHistoryDataMap: [String: [URL]] = [:] // Dictionary(HashMap)
@@ -43,6 +43,46 @@ import Foundation
         }.count
     }
     
+    // count each day of paintings
+    var dayCount: [Int] {
+        var calendar = Calendar.current
+        calendar.firstWeekday = 2  // ✅ Monday = first day
+        let days = Calendar.current.currentWeekDays()
+        
+        let groupByDay = Dictionary(grouping: historyDataList){ record in
+            record.dateOnly
+        }
+            
+        return days.map{ day in
+            (groupByDay[day]?.count ?? 0)
+        }
+    }
+    var monthsCount: [Int] {
+        let calendar = Calendar.current
+        
+        // Generate 12 months of current year (Jan 1st → Dec 1st)
+        let currentYear = calendar.component(.year, from: Date())
+        let months = (1...12).compactMap { monthNumber -> Date? in
+            var components = DateComponents()
+            components.year = currentYear
+            components.month = monthNumber
+            components.day = 1
+            return calendar.date(from: components)
+        }
+        
+        let groupByMonth = Dictionary(grouping: historyDataList){ record in
+            let compenents = calendar.dateComponents([.year, .month], from: record.addDt)
+            var monthDate = DateComponents()
+            monthDate.year = compenents.year
+            monthDate.month = compenents.month
+            return calendar.date(from: monthDate)!
+        }
+        
+        return months.map {month in
+            (groupByMonth[month]?.count ?? 0)
+        }
+    }
+    
     init(firebaseService: FirebaseService){
         self.firebaseService = firebaseService
     }
@@ -62,7 +102,7 @@ import Foundation
             return weekCount
         case .month:
             return monthCount
-        default:
+        case .year:
             return historyDataList.count
         }
     }
