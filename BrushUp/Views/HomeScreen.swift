@@ -23,7 +23,8 @@ struct HomeScreen: View {
     @State var showingTips = false
     
     @State var stats: [GoalStats] = []
-    @State var top3Categories: [CatStats] = []
+    @State var todaysStars: Int = 0
+    // @State var top3Categories: [CatStats] = []
 //    let top5Categories = [
 //        ("Top 3 categories painted", ["animal", "city", "food"])
 //    ]
@@ -47,77 +48,77 @@ struct HomeScreen: View {
     }
     
     private func updateProgress() {
-        let basecountDrawings = UserDefaults.standard.integer(forKey: "countDrawings")
-        let strFrequency = UserDefaults.standard.string(forKey: "frequency")
+        let basecountDrawings = UserDefaults.standard.integer(forKey: SwiftDataKey.countDrawings)
+        let strFrequency = UserDefaults.standard.string(forKey: SwiftDataKey.frequency)
         let rawFrequency = strFrequency.flatMap { Frequency(rawValue: $0) } ?? .day
         let count = historyViewModel?.countActivity(frequency: rawFrequency)
         
         countDrawings = basecountDrawings == 0 ? 1 : basecountDrawings
+        UserDefaults.standard.set(countDrawings, forKey: SwiftDataKey.countDrawings)
         frequency = rawFrequency
+        UserDefaults.standard.set(frequency.rawValue, forKey: SwiftDataKey.frequency)
         progressCounter = count ?? 0
     }
     private func updateStats() {
-        let basecountDrawings = UserDefaults.standard.integer(forKey: "countDrawings")
+        stats.removeAll()
+        let basecountDrawings = UserDefaults.standard.integer(forKey: SwiftDataKey.countDrawings)
         let count = historyViewModel?.countActivity(frequency: .day) ?? 0
         let yearCount = historyViewModel?.countActivity(frequency: .year) ?? 0
         let numOfStars = count - basecountDrawings
-        
-        let (hitDate, hitCount) = (UserDefaults.standard.string(forKey: "hitTheGoals") ?? "").dateCountParts()
-        let (starDate, starCount) = (UserDefaults.standard.string(forKey: "hitTheStars") ?? "").dateCountParts()
+        //print("numOfStars: \(numOfStars) : count: \(count) : basecountDrawings: \(basecountDrawings)")
+        let (hitDate, hitCount) = (UserDefaults.standard.string(forKey: SwiftDataKey.hitTheGoals) ?? "").dateCountParts()
+        let (starDate, starCount) = (UserDefaults.standard.string(forKey: SwiftDataKey.hitTheStars) ?? "").dateCountParts()
         
         let isHitTheGoal: Bool = count >= basecountDrawings
         let isHitTheStar: Bool = numOfStars >= 1
         
+        var strNewHitTheGoals:String
+        var strNewHitTheStars:String
         //validate date format
         if !hitDate.isValidMMddyyyy {
-            //print("count \(count) : basecountDrawings \(basecountDrawings)")
-            //print(isHitTheGoal)
-            let strNewHitTheGoals = isHitTheGoal ? Date.mmddyyyyString + ":1" : Date.mmddyyyyString + ":0"
-            UserDefaults.standard.set(strNewHitTheGoals, forKey: "hitTheGoals")
 
-            //print("saved new hitTheGoals first time")
+            strNewHitTheGoals = Date.yesterdayMMDDYYYYString + ":0"
+            UserDefaults.standard.set(strNewHitTheGoals, forKey: SwiftDataKey.hitTheGoals)
+
         }
         if !starDate.isValidMMddyyyy {
             
-            let strNewHitTheStars = isHitTheStar ? Date.mmddyyyyString + ":" + String(numOfStars) : Date.mmddyyyyString + ":0"
-            UserDefaults.standard.set(strNewHitTheStars, forKey: "hitTheStars")
+            strNewHitTheStars = Date.yesterdayMMDDYYYYString + ":0"
+            UserDefaults.standard.set(strNewHitTheStars, forKey: SwiftDataKey.hitTheStars)
 
-            //print("saved new hitTheStars first time")
-        }
-        
-        if !hitDate.isValidMMddyyyy || !starDate.isValidMMddyyyy {
-            stats.append(GoalStats("Days you hit your goal", Double(0), "days"))
-            stats.append(GoalStats("Total Stars you earned", Double(0), "stars"))
-            stats.append(GoalStats("Paintings you've drawn", Double(yearCount), "paintings"))
-            top3Categories.append(CatStats("Top 3 categories painted", []))
-            return
         }
         let todayMidnight = Calendar.current.startOfDay(for: Date())
 
-        //hit the goal
+        //update hit the goal first time in a day
         if isHitTheGoal && hitDate.mmddyyyyDate! < todayMidnight {
             
             let strNewHitTheGoals = Date.mmddyyyyString + ":" + String(Int(hitCount)! + 1)
-            UserDefaults.standard.set(strNewHitTheGoals, forKey: "hitTheGoals")
-            //print("saved new hitTheGoals:  \(strNewHitTheGoals) : today \(todayMidnight)")
+            UserDefaults.standard.set(strNewHitTheGoals, forKey: SwiftDataKey.hitTheGoals)
         }
   
-        //hit the stars
+        //update hit the stars first time in a day
         if  isHitTheStar && starDate.mmddyyyyDate! < todayMidnight {
-            
+            todaysStars = numOfStars
             let strNewHitTheStars = Date.mmddyyyyString + ":" + String(Int(starCount)! + numOfStars)
-            UserDefaults.standard.set(strNewHitTheStars, forKey: "hitTheStars")
-            //print("saved new hitTheStars: \(strNewHitTheStars) : today \(todayMidnight)")
+            UserDefaults.standard.set(strNewHitTheStars, forKey: SwiftDataKey.hitTheStars)
         }
         
-        let (_, hitCount2) = (UserDefaults.standard.string(forKey: "hitTheGoals") ?? "").dateCountParts()
-        let (_, starCount2) = (UserDefaults.standard.string(forKey: "hitTheStars") ?? "").dateCountParts()
+        // culculate hit the satrs again simultaneously
+        if starDate.mmddyyyyDate! == todayMidnight {
+            let diffStars = numOfStars > todaysStars ? numOfStars - todaysStars : 0
+            todaysStars = numOfStars > todaysStars ? numOfStars : todaysStars
+            //print("after diffStars: \(diffStars) : todaysStars \(todaysStars) : numOfStars \(numOfStars)")
+            //print("starCount : \(starCount)")
+        }
+        
+        let (_, hitCount2) = (UserDefaults.standard.string(forKey: SwiftDataKey.hitTheGoals) ?? "").dateCountParts()
+        let (_, starCount2) = (UserDefaults.standard.string(forKey: SwiftDataKey.hitTheStars) ?? "").dateCountParts()
         
         
         stats.append(GoalStats("Days you hit your goal", Double(hitCount2) ?? 0.0, "days"))
-        stats.append(GoalStats("Total Stars you earned", Double(starCount2) ?? 0.0, "stars"))
+        let totalStars = Int(Double(starCount2) ?? 0) + todaysStars
+        stats.append(GoalStats("Total Stars you earned", Double(totalStars), "stars"))
         stats.append(GoalStats("Paintings you've drawn", Double(yearCount), "paintings"))
-        top3Categories.append(CatStats("Top 3 categories painted", ["animal", "city", "food"]))
     }
 
     
@@ -170,7 +171,7 @@ struct HomeScreen: View {
 
                     ActivityChart(dayValues: historyViewModel?.dayCount ?? [], monthValues: historyViewModel?.monthsCount ?? [])//.frame(maxWidth: .infinity)
                     
-                    DailyActivityStat(goalStats: stats, top3Categories: top3Categories)
+                    DailyActivityStat(goalStats: stats) // top3Categories: top3Categories
                         //.frame(maxWidth: .infinity)
 
                 }//.frame(maxWidth: .infinity)
@@ -229,6 +230,12 @@ struct HomeScreen: View {
                 updateProgress()
                 updateStats()
                 
+            }
+            .onChange(of: showingGoalSheet){_, newValue in
+                    
+                if !newValue {
+                    updateStats()
+                }
             }
         }
     }
