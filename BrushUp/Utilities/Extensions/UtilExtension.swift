@@ -19,9 +19,9 @@ extension String {
         guard !isEmpty, !trimmingCharacters(in: .whitespaces).isEmpty else {
             return nil
         }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMddyyyy"
-        return formatter.date(from: self)
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "MMddyyyy"
+        return DateFormatter.mmddyyyyFormatter.date(from: self)
     }
 
     func dateCountParts() -> (date: String, count: String) {
@@ -51,6 +51,25 @@ extension Calendar {
             mondayCalendar.date(byAdding: .day, value: offset, to: weekStart)
         }
     }
+    //let aprilDate = Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 15))!
+    // let decemberDate = Calendar.current.date(from: DateComponents(year: 2026, month: 12, day: 1))!
+    //let novemberDate = Calendar.current.date(from: DateComponents(year: 2026, month: 11, day: 1))!
+    func isJanuaryToMarch(for date: Date = .now) -> Bool {
+        isInMonths(1...3, for: date)
+    }
+    func isAprilToOctober(for date: Date = .now) -> Bool {
+        isInMonths(4...10, for: date)
+    }
+    func isNovemberToDecember(for date: Date = .now) -> Bool {
+        isInMonths(11...12, for: date)
+    }
+    
+    private func isInMonths(_ range: ClosedRange<Int>, for date: Date) -> Bool {
+        let month = self.component(.month, from: date)
+        return range.contains(month)
+    }
+    
+    
 }
 
 extension HistoryRecord {
@@ -63,10 +82,44 @@ extension HistoryRecord {
     }
 }
 
-extension Date {
-    static var mmddyyyyString: String {
+extension DateFormatter {
+    static var mmddyyyyFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMddyyyy"
-        return formatter.string(from: Date())
+        return formatter
     }
+    // Formatter for weekday name
+    static let dayNameFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE"  // Full weekday name, e.g. Monday
+        return formatter
+    }()
+    
+    // Formatter for date (e.g. "7/31")
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M/d"   // Month/Day format
+        return formatter
+    }()
+    
+    static let longMonthDayYearFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM d, yyyy"
+        return formatter
+    }()
 }
+
+extension Date {
+    static var mmddyyyyString: String {
+        return DateFormatter.mmddyyyyFormatter.string(from: Date())
+    }
+
+    static var yesterdayMMDDYYYYString: String {
+        let calendar = Calendar.current
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: Date())!
+        return DateFormatter.mmddyyyyFormatter.string(from: yesterday)
+    }
+    
+}
+
+

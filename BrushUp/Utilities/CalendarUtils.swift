@@ -57,26 +57,4 @@ enum CalenderUtils {
         case .sat: return ["base": .pink, "prime": .red, "secondary": .purple]
         }
     }
-    
-    // Formatter for weekday name
-    static let dayNameFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEE"  // Full weekday name, e.g. Monday
-        return formatter
-    }()
-    
-    // Formatter for date (e.g. "7/31")
-    static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "M/d"   // Month/Day format
-        return formatter
-    }()
-    
-    static let longMonthDayYearFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM d, yyyy"
-        return formatter
-    }()
-    
-    
 }
