@@ -15,12 +15,12 @@ struct test : View {
     
 
     @State var goalStats: [GoalStats] = [GoalStats("Days you hit your goal", 6.0, "days")]
-    @State var cattats: [CatStats] = [("Top 3 categories painted", ["animal", "city", "food"])]
+    //@State var cattats: [CatStats] = [("Top 3 categories painted", ["animal", "city", "food"])]
     
     var body: some View {
         ActivityChart(dayValues: dayValues, monthValues: monthValues)
         //Spacer()
-        DailyActivityStat(goalStats: goalStats, top3Categories: cattats)
+        DailyActivityStat(goalStats: goalStats) // top3Categories: cattats
     }
 }
 struct SectionContainer<Content: View>: View {
@@ -69,7 +69,7 @@ struct DailyActivityStat: View {
 //    ]
     
     let goalStats: [GoalStats]
-    let top3Categories: [CatStats]
+    // let top3Categories: [CatStats]
     
     @State private var dashPhase: CGFloat = 0
     @State private var cometOffset: CGFloat = -40
@@ -115,38 +115,38 @@ struct DailyActivityStat: View {
                             }
                         }
                         
-                        ForEach(Array(top3Categories.enumerated()), id:\.offset){ index, cat in
-                                let (title, arr) = cat
-                            VStack {
-                                HStack(alignment: .top){
-                                    Text("\(title)")
-                                        .font(AppConstants.mediumRoundedFont)
-                                        .foregroundStyle(AppConstants.perlwhilte.opacity(1))
-                                        .frame(height: 10)
-                                        .minimumScaleFactor(0.8)
-                                        .lineLimit(1)
-                                    Spacer()
-                                    VStack(alignment: .leading) {
-                                        ForEach(Array(arr.enumerated()), id: \.offset){ index, category in
-                                            Text("\(index+1). \(category)")
-                                                .font(AppConstants.mediumRoundedFont)
-                                                .foregroundStyle(AppConstants.perlwhilte.opacity(1))
-                                                .frame(height: 10)
-                                                .frame(alignment: .trailing)
-                                        }
-                                        
-                                    }
-                                    
-                                }
-                                .padding(.horizontal, AppConstants.isiPad ? 16 : 6)
-                                ShineCometLine()
-                                
-                            }
-
-                            if index < top3Categories.count {
-                                Spacer()
-                            }
-                        }
+//                        ForEach(Array(top3Categories.enumerated()), id:\.offset){ index, cat in
+//                                let (title, arr) = cat
+//                            VStack {
+//                                HStack(alignment: .top){
+//                                    Text("\(title)")
+//                                        .font(AppConstants.mediumRoundedFont)
+//                                        .foregroundStyle(AppConstants.perlwhilte.opacity(1))
+//                                        .frame(height: 10)
+//                                        .minimumScaleFactor(0.8)
+//                                        .lineLimit(1)
+//                                    Spacer()
+//                                    VStack(alignment: .leading) {
+//                                        ForEach(Array(arr.enumerated()), id: \.offset){ index, category in
+//                                            Text("\(index+1). \(category)")
+//                                                .font(AppConstants.mediumRoundedFont)
+//                                                .foregroundStyle(AppConstants.perlwhilte.opacity(1))
+//                                                .frame(height: 10)
+//                                                .frame(alignment: .trailing)
+//                                        }
+//                                        
+//                                    }
+//                                    
+//                                }
+//                                .padding(.horizontal, AppConstants.isiPad ? 16 : 6)
+//                                ShineCometLine()
+//                                
+//                            }
+//
+//                            if index < top3Categories.count {
+//                                Spacer()
+//                            }
+//                        }
                         
                     }
 //                    .frame(height: UIScreen.main.bounds.size.height / 6)
@@ -172,12 +172,33 @@ struct ActivityChart: View {
     
     private var computedWeeklyData: [(String, Double)] {
         if isToggled {
-            return Array(zip(
-                AppConstants.months.prefix(AppConstants.isiPad ? monthLimit: limit),
-                monthValues.prefix(AppConstants.isiPad ? monthLimit: limit).map {dayValue in
-                        Double(dayValue) / Double(golas * yLimit)
+            
+            if AppConstants.isiPad {
+                return Array(zip(
+                    AppConstants.months.prefix(monthLimit),
+                    monthValues.prefix(monthLimit).map { dayValue in Double(dayValue) / Double(golas * yLimit) }
+                ))
+            }else {
+                if Calendar.current.isJanuaryToMarch() {
+                   // Q1
+                    return Array(zip(
+                        AppConstants.months[0..<7],
+                        monthValues[0..<7].map { dayValue in Double(dayValue) / Double(golas * yLimit) }
+                    ))
+                } else if Calendar.current.isNovemberToDecember() {
+                    // Q3
+                    return Array(zip(
+                        AppConstants.months[5..<12],
+                        monthValues[5..<12].map { dayValue in Double(dayValue) / Double(golas * yLimit) }
+                    ))
+                } else {
+                    // Q2
+                    return Array(zip(
+                        AppConstants.months[3..<10],
+                        monthValues[3..<10].map { dayValue in Double(dayValue) / Double(golas * yLimit) }
+                    ))
                 }
-            ))
+            }
         }
         return Array(zip(
             AppConstants.weekdays.prefix(limit),

@@ -179,15 +179,15 @@ import Foundation
     }
     func getDailyActivityHistoryList() {
         sortedList = Array(fetchedHistoryDataMap).sorted{ entry1, entry2 in
-            let date1 = CalenderUtils.longMonthDayYearFormatter.date(from: entry1.key) ?? Date.distantPast
-                 let date2 = CalenderUtils.longMonthDayYearFormatter.date(from: entry2.key) ?? Date.distantPast
+            let date1 = DateFormatter.longMonthDayYearFormatter.date(from: entry1.key) ?? Date.distantPast
+                 let date2 = DateFormatter.longMonthDayYearFormatter.date(from: entry2.key) ?? Date.distantPast
                  return date1 > date2
              }
     }
     func getMonthlyActivityHistoryList() {
         var monthDict: [String: [URL]] = [:]
         for (dateString, urls) in fetchedHistoryDataMap {
-            guard let date = CalenderUtils.longMonthDayYearFormatter.date(from: dateString) else { continue }
+            guard let date = DateFormatter.longMonthDayYearFormatter.date(from: dateString) else { continue }
             
             let monthName = DateFormatter().monthSymbols[Calendar.current.component(.month, from: date)-1]
             

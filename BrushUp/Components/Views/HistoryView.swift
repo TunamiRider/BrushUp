@@ -17,7 +17,7 @@ struct HistoryView: View {
     //@State private var isWeeklyList: Bool = true
     @Binding var isWeeklyList: Bool
     @State private var sortedList: [(key: String, value: [URL])] = [] // Array of Tuple
-    
+    @State private var numOfYearlyGridItems: Int =  AppConstants.isiPad ? 8 : 3
     private func getDailyActivityHistoryList(){
         let viewModel = historyViewModel ?? {
             let vm = HistoryViewModel(firebaseService: services.firebaseService)
@@ -149,8 +149,8 @@ struct HistoryView: View {
                     .font(AppConstants.mediumRoundedFont)
                 
                 // 3-per-row groups
-                ForEach(Array(stride(from: 0, to: urls.count, by: 3).map{ i in
-                    Array(urls[i..<Swift.min(i + 3, urls.count)])
+                ForEach(Array(stride(from: 0, to: urls.count, by: numOfYearlyGridItems).map{ i in
+                    Array(urls[i..<Swift.min(i + numOfYearlyGridItems, urls.count)])
                 }), id: \.first!) { group in
                     LazyHGrid(rows: [GridItem(.fixed(80))], spacing: 10) {
                         ForEach(group, id: \.self) { url in
@@ -172,6 +172,7 @@ struct HistoryView: View {
         
         var body: some View {
             ZStack(alignment: .topLeading){
+
                 //Color.black.ignoresSafeArea()
                 AsyncImage(url: selectedURL!) { image in
                     image
