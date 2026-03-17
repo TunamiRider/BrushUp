@@ -353,32 +353,78 @@ struct ActivityChart: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                    .overlay(  // ← Text displays ON the red color
-                        Image("Tips")
-                            .resizable()
-                            .frame(width: 90, height: 90)
-                            .padding(50)
-                    )
-                Color.white.opacity(0.7)
-                Color.white.opacity(0.7)
-                Color.white.opacity(0.7)
-            }
-            VStack {
-                Spacer()
-                Text("Your content")
-                Text("Your content2")
-                Text("Your content3")
-                Text("Your content4")
-                Text("Your content5")
-                Spacer()
-                Spacer()
-            }
-            .foregroundStyle(.secondary)
-            .padding(50)
+                .overlay(  // ← Text displays ON the red color
+                    Image("Tips")
+                        .resizable()
+                        .frame(width: 90, height: 90)
+                        .padding(50)
+                )
+                VStack(alignment: .leading, spacing: 16) {
+                    TipView(number: 1,
+                            title: "Get Started Quickly",
+                            text: "Take a moment to explore the main features of the app. Most tools are designed to be simple, so try tapping around and see what each section does. The faster you get familiar with the layout, the easier it becomes to get things done.")
 
+                    TipView(number: 2,
+                            title: "Customize Your Experience",
+                            text: "Check the settings or preferences area to personalize the app. Many apps allow you to adjust notifications, themes, or default behaviors so the experience matches how you like to work.")
 
+                    TipView(number: 3,
+                            title: "Use Shortcuts and Time‑Savers",
+                            text: "Look for built‑in shortcuts, quick actions, or automation features. These tools can help you complete tasks faster and reduce repetitive steps once you know where to find them.")
+                }
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(AppConstants.spaceblack.opacity(0.8))
+                .font(AppConstants.mediumRoundedFont)
+                .foregroundStyle(AppConstants.perlwhilte)
+//                AppConstants.spaceblack.opacity(0.8).overlay{
+//                    VStack(alignment: .leading, spacing : 4){
+//                        Text("Tip 1: Get Started Quickly")
+//
+//                        Text("Take a moment to explore the main features of the app. Most tools are designed to be simple, so try tapping around and see what each section does. The faster you get familiar with the layout, the easier it becomes to get things done.")
+//                    }
+//                }
+//                .font(AppConstants.mediumRoundedFont)
+//                .foregroundStyle(AppConstants.perlwhilte)
+//                
+//                AppConstants.spaceblack.opacity(0.8).overlay{
+//                    VStack(alignment: .leading, spacing : 4){
+//                        Text("Tip 2: Customize Your Experience")
+//
+//                        Text("Check the settings or preferences area to personalize the app. Many apps allow you to adjust notifications, themes, or default behaviors so the experience matches how you like to work.")
+//                    }
+//                }
+//                .font(AppConstants.mediumRoundedFont)
+//                .foregroundStyle(AppConstants.perlwhilte)
+//                
+//                AppConstants.spaceblack.opacity(0.8).overlay{
+//                    VStack(alignment: .leading, spacing : 4){
+//                        Text("Tip 3: Use Shortcuts and Time‑Savers")
+//                        
+//                        Text("Look for built‑in shortcuts, quick actions, or automation features. These tools can help you complete tasks faster and reduce repetitive steps once you know where to find them.")
+//                    }
+//                }
+//                .font(AppConstants.mediumRoundedFont)
+//                .foregroundStyle(AppConstants.perlwhilte)
+                
+            }
         }
+        
         .ignoresSafeArea()
     }
+    struct TipView: View {
+        let number: Int
+        let title: String
+        let text: String
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Tip \(number): \(title)")
+                Text(text).lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+    
 }
 
