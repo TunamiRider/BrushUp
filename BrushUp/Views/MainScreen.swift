@@ -15,34 +15,58 @@ struct MainScreen: View {
     @State private var sidebarDragOffset: CGFloat = 0
     @State private var isWeeklyList: Bool = true
     private let frameSize:CGFloat = 32
+    @State private var showsSplashScreen: Bool = true
+    
+    var safeArea: UIEdgeInsets {
+        if let safeArea = (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.keyWindow?.safeAreaInsets {
+            return safeArea
+        }
+        return .zero
+    }
     var body: some View {
         ZStack {
             
-            if isPhotoPlayerScreen {
-                PhotoPlayerScreen(goMainView: $isPhotoPlayerScreen, isResume: $isResume, isPlaying: $isPlaying)
-            }
-            else {
-                Group {
-                    if AppConstants.isiPad {
-                        HStack(spacing: 0) {
-                            sidebarView
-                                .frame(width: isSidebarCollapsed ? 60 : 280)
-                                .animation(.easeInOut(duration: 0.3), value: isSidebarCollapsed)
+            if showsSplashScreen {
+                SplashScreen()
+                    .transition(CustomSplashTransaction(isRoot: false))
+            } else {
+                if isPhotoPlayerScreen {
+                    PhotoPlayerScreen(goMainView: $isPhotoPlayerScreen, isResume: $isResume, isPlaying: $isPlaying)
+                }
+                else {
+                    Group {
+                        if AppConstants.isiPad {
+                            HStack(spacing: 0) {
+                                sidebarView
+                                    .frame(width: isSidebarCollapsed ? 60 : 280)
+                                    .animation(.easeInOut(duration: 0.3), value: isSidebarCollapsed)
+                                
+                                Divider()
+                                tabContent
+                            }
+                        } else {
+                            VStack(spacing: 0) {
+                                tabContent
+                                bottomTabBar
+                            }
+                            .ignoresSafeArea(edges: .bottom)
                             
-                            Divider()
-                            tabContent
                         }
-                    } else {
-                        VStack(spacing: 0) {
-                            tabContent
-                            bottomTabBar
-                        }
-                        .ignoresSafeArea(edges: .bottom)
                         
                     }
+                    .transition(CustomSplashTransaction(isRoot: true))
                     
                 }
-                .background(AppConstants.spaceblack)
+            }
+        }
+        .background(AppConstants.spaceblack)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+//        .ignoresSafeArea()
+        .task {
+            guard showsSplashScreen else { return }
+            try? await Task.sleep(for: .seconds(0.5))
+            withAnimation(.smooth(duration: 0.55)){
+                showsSplashScreen = false
             }
         }
         .onAppear {
