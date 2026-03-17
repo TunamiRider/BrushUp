@@ -40,7 +40,7 @@ where E: EntityPersistentModel, D: DTOModel {
         try modelContext.save()
     }
     func deleteById(_ tagId: UUID) async {
-        _ = try! await modelContext.delete(model: E.self, where: #Predicate{ tag in tag.id as! UUID == tagId })
+        _ = try! modelContext.delete(model: E.self, where: #Predicate{ tag in tag.id as! UUID == tagId })
     }
     
     func fetchWithPredicate(_ descriptor: FetchDescriptor<E>) async throws -> [E] {

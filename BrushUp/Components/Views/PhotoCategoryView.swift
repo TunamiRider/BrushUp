@@ -28,7 +28,7 @@ struct PhotoCategoryView: View {
             }
         }
         .task {
-            await photoCategoryViewModel.start()
+            photoCategoryViewModel.start()
         }
     }
     
