@@ -87,6 +87,10 @@ struct HomeScreen: View {
             UserDefaults.standard.set(strNewHitTheStars, forKey: SwiftDataKey.hitTheStars)
 
         }
+        
+        if !hitDate.isValidMMddyyyy || !starDate.isValidMMddyyyy {
+            return
+        }
         let todayMidnight = Calendar.current.startOfDay(for: Date())
 
         //update hit the goal first time in a day
@@ -105,9 +109,9 @@ struct HomeScreen: View {
         
         // culculate hit the satrs again simultaneously
         if starDate.mmddyyyyDate! == todayMidnight {
-            let diffStars = numOfStars > todaysStars ? numOfStars - todaysStars : 0
+            //let diffStars = numOfStars > todaysStars ? numOfStars - todaysStars : 0
             todaysStars = numOfStars > todaysStars ? numOfStars : todaysStars
-            //print("after diffStars: \(diffStars) : todaysStars \(todaysStars) : numOfStars \(numOfStars)")
+            //print(": todaysStars \(todaysStars) : numOfStars \(numOfStars)")
             //print("starCount : \(starCount)")
         }
         
@@ -214,7 +218,7 @@ struct HomeScreen: View {
                     //.border(Color.red)
                 
                 createStartButton().disabled(showingGoalSheet).padding(.bottom, 10)
-                    .frame(width: .infinity)
+                    //.frame(width: .infinity)
                 Spacer()
             }
             .padding(.horizontal)
@@ -491,20 +495,20 @@ struct HomeScreen: View {
     
 }
 
-#Preview {
-     
-    @Previewable @State var showingGoalSheet = true
-    @Previewable @State var countDrawings = 0
-    @Previewable @State var frequency = Frequency.day
-    @Previewable @State  var goMainView = false
-    @Previewable @State var isResume = false
-    let appServices = AppServices()
-    let unsplashPhotoManager = UnsplashPhotoManager(
-        unsplashService: appServices.unsplashService,
-        firebaseService: appServices.firebaseService
-    )
-    
-    HomeScreen(goMainView: $goMainView, isResume: $isResume)
-        .environment(appServices).background(AppConstants.spaceblack)
-}
+//#Preview {
+//     
+//    @Previewable @State var showingGoalSheet = true
+//    @Previewable @State var countDrawings = 0
+//    @Previewable @State var frequency = Frequency.day
+//    @Previewable @State  var goMainView = false
+//    @Previewable @State var isResume = false
+//    let appServices = AppServices()
+////    let unsplashPhotoManager = UnsplashPhotoManager(
+////        unsplashService: appServices.unsplashService,
+////        firebaseService: appServices.firebaseService
+////    )
+//    
+//    HomeScreen(goMainView: $goMainView, isResume: $isResume)
+//        .environment(appServices).background(AppConstants.spaceblack)
+//}
 

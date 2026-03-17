@@ -27,6 +27,9 @@ public struct PhotoPlayerScreen: View {
     @State private var isPrevious = false
     @State private var isPaused: Bool = true
     @State private var isFinished: Bool = false
+    
+    @State private var dragOffset: CGFloat = 0
+    @State private var isTimerPlayerCollapsed: Bool = false
 
     // private let player = AVPlayer.dingPlayer()
     @State private var uiScreenSize = UIScreen.main.bounds.size
@@ -250,16 +253,16 @@ public struct PhotoPlayerScreen: View {
     @Previewable @State var appServices = AppServices()
     // @Previewable @State var unsplashService = UnsplashService(fetchService: FetchService())
     
+    @Previewable @State var goMainView2: Bool = false
+    @Previewable @State var isResume: Bool = false
+    @Previewable @State var isPlaying: Bool = false
+    
     var unsplashPhotoManager: UnsplashPhotoManager {
         UnsplashPhotoManager(
             unsplashService: appServices.unsplashService,
             firebaseService: appServices.firebaseService
         )
     }
-    
-    @State var goMainView2: Bool = false
-    @State var isResume: Bool = false
-    @State var isPlaying: Bool = false
     
     PhotoPlayerScreen(goMainView: $goMainView2, isResume: $isResume, isPlaying: $isPlaying)
         .environment(brushUpTimer)
