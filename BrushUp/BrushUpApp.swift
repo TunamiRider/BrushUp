@@ -38,6 +38,7 @@ final class AppServices {
 struct BrushUpApp: App {
     @State var brushUpTimer = BrushUpTimer()
     @State var appServices = AppServices()
+    @State var appActiveObserver = AppActiveObserver.shared
     
     private var unsplashPhotoManager: UnsplashPhotoManager {
         UnsplashPhotoManager(
@@ -69,6 +70,7 @@ struct BrushUpApp: App {
                 .environment(appServices)
                 .environment(brushUpTimer)
                 .environment(unsplashPhotoManager)
+                .environment(appActiveObserver)
         }
     }
 }

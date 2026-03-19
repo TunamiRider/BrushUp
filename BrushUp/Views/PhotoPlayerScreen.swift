@@ -15,6 +15,7 @@ public struct PhotoPlayerScreen: View {
     @Environment(UnsplashPhotoManager.self) private var photoManager
     @Environment(\.modelContext) private var context
     @Environment(BrushUpTimer.self) private var brushupTimer
+    @Environment(AppActiveObserver.self) private var appActiveObserver
 
     //@State var minutes: Int = 1
     @State var isMonochrome: Bool = false
@@ -203,6 +204,11 @@ public struct PhotoPlayerScreen: View {
                 isPaused = true
             }
         }
+        .onChange(of: appActiveObserver.isActive){ _, isNowActive in
+            if !isNowActive && brushupTimer.secondsRemaining > 0 {
+                isPaused = true
+            }
+        }
         .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
             let newOrientation = UIDevice.current.orientation
             if newOrientation.isValidInterfaceOrientation && newOrientation != self.currentOrientation {
@@ -252,6 +258,7 @@ public struct PhotoPlayerScreen: View {
     // @Previewable @State var fireBaseService = FirebaseService()
     @Previewable @State var appServices = AppServices()
     // @Previewable @State var unsplashService = UnsplashService(fetchService: FetchService())
+    @Previewable @State var appActiveObserver: AppActiveObserver = AppActiveObserver()
     
     @Previewable @State var goMainView2: Bool = false
     @Previewable @State var isResume: Bool = false
@@ -268,6 +275,7 @@ public struct PhotoPlayerScreen: View {
         .environment(brushUpTimer)
         .environment(unsplashPhotoManager)
         .environment(appServices)
+        .environment(appActiveObserver)
     
 }
 

@@ -418,11 +418,13 @@ struct MainScreen: View {
         unsplashService: appServices.unsplashService,
         firebaseService: appServices.firebaseService
     )
+    let appActiveObserver: AppActiveObserver = .init()
     
     MainScreen()
         .environment(appServices)
         .environment(unsplashPhotoManager)
         .environment(BrushUpTimer())
+        .environment(appActiveObserver)
 }
 
 
