@@ -58,7 +58,7 @@ struct TimerPlayView: View {
                             let seconds = String(format: "%02d", brushupTimer.secondsElapsed%60)
                             Text("\(brushupTimer.secondsElapsed/60) : \(seconds)")
                                 .foregroundStyle(.white, .background)
-                                .font(.subheadline)
+                                .font(.subheadline.monospacedDigit())
                                 .opacity(0.85)
                             
                         }
@@ -66,17 +66,21 @@ struct TimerPlayView: View {
                         .animation(.easeInOut(duration: 0.8), value: isDimmed)
                         
                         ProgressView(value: progress)
-                            .progressViewStyle(ScrumProgressViewStyle(theme: .bubblegum))
+                            .progressViewStyle(.linear)
+                            .tint(AppConstants.dustypink)
                             .frame(height: 10)
                             .opacity(0.85)
                             .animation(.linear(duration: 0.1), value: progress)
+                            
+                        
+                        
                         
                         VStack(alignment: .trailing){
                             
                             let seconds = String(format: "%02d", brushupTimer.secondsRemaining%60)
                             Text("\(brushupTimer.secondsRemaining/60) : \(seconds)")
                                 .foregroundStyle(.white, .background)
-                                .font(.subheadline)
+                                .font(.subheadline.monospacedDigit())
                                 .opacity(0.85)
                             
                         }
