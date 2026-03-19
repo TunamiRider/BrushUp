@@ -69,6 +69,7 @@ struct HomeScreen: View {
         let (hitDate, hitCount) = (UserDefaults.standard.string(forKey: SwiftDataKey.hitTheGoals) ?? "").dateCountParts()
         let (starDate, starCount) = (UserDefaults.standard.string(forKey: SwiftDataKey.hitTheStars) ?? "").dateCountParts()
         
+        
         let isHitTheGoal: Bool = count >= basecountDrawings
         let isHitTheStar: Bool = numOfStars >= 1
         
@@ -83,12 +84,15 @@ struct HomeScreen: View {
         }
         if !starDate.isValidMMddyyyy {
             
-            strNewHitTheStars = Date.yesterdayMMDDYYYYString + ":0"
+            strNewHitTheStars = Date.mmddyyyyString + ":0"
             UserDefaults.standard.set(strNewHitTheStars, forKey: SwiftDataKey.hitTheStars)
 
         }
         
         if !hitDate.isValidMMddyyyy || !starDate.isValidMMddyyyy {
+            stats.append(GoalStats("Days you hit your goal", Double(0), "days"))
+            stats.append(GoalStats("Total Stars you earned", Double(0), "stars"))
+            stats.append(GoalStats("Paintings you've drawn", Double(0), "paintings"))
             return
         }
         let todayMidnight = Calendar.current.startOfDay(for: Date())
@@ -110,8 +114,14 @@ struct HomeScreen: View {
         // culculate hit the satrs again simultaneously
         if starDate.mmddyyyyDate! == todayMidnight {
             //let diffStars = numOfStars > todaysStars ? numOfStars - todaysStars : 0
-            todaysStars = numOfStars > todaysStars ? numOfStars : todaysStars
-            //print(": todaysStars \(todaysStars) : numOfStars \(numOfStars)")
+            var curTodaysStars = UserDefaults.standard.integer(forKey: SwiftDataKey.curTodaysStars)
+            //print("currrr: \(curTodaysStars)")
+            todaysStars = numOfStars >= curTodaysStars ? numOfStars : todaysStars
+            
+            curTodaysStars = numOfStars >= curTodaysStars ? numOfStars : curTodaysStars
+            
+            UserDefaults.standard.set(curTodaysStars, forKey: SwiftDataKey.curTodaysStars)
+            //print(": todaysStars \(todaysStars) : numOfStars \(numOfStars) : curTodaysStars \(curTodaysStars)")
             //print("starCount : \(starCount)")
         }
         
@@ -121,6 +131,7 @@ struct HomeScreen: View {
         
         stats.append(GoalStats("Days you hit your goal", Double(hitCount2) ?? 0.0, "days"))
         let totalStars = Int(Double(starCount2) ?? 0) + todaysStars
+        //print("starCount2: \(starCount2) : todaysStars : \(todaysStars)")
         stats.append(GoalStats("Total Stars you earned", Double(totalStars), "stars"))
         stats.append(GoalStats("Paintings you've drawn", Double(yearCount), "paintings"))
     }
@@ -212,11 +223,10 @@ struct HomeScreen: View {
                 
                 
                 makeMascot2()
-                    
                     .frame(height: max(50, UIScreen.main.bounds.height / 6))
                     .frame(width: UIScreen.main.bounds.size.width / 3)
-                    //.border(Color.red)
-                
+
+                Spacer()
                 createStartButton().disabled(showingGoalSheet).padding(.bottom, 10)
                     //.frame(width: .infinity)
                 Spacer()

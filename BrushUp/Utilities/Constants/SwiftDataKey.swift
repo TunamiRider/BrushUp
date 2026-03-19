@@ -12,5 +12,6 @@ struct SwiftDataKey {
     
     static let hitTheGoals: String = "hitTheGoals"
     static let hitTheStars: String = "hitTheStars"
+    static let curTodaysStars: String = "curTodaysStars"
     
 }
