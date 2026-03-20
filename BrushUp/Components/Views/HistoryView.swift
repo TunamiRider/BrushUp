@@ -271,7 +271,7 @@ struct HistoryView: View {
         @State private var isScaledToFit = true
         @Binding var currentIndex: Int
         @Binding var urls: [URL] // Pass the full array here
-        
+
         // You'll need to pass the full urls array and current index from parent
         var body: some View {
             GeometryReader { geo in
@@ -307,10 +307,11 @@ struct HistoryView: View {
                     // Your existing X button overlay
                     closeButton(geo: geo)
                 }
-                .overlay(alignment: .bottom) {
-                    // Your existing description overlay
-                    descriptionOverlay(geo: geo)
-                }
+//                .overlay(alignment: .bottom) {
+//                    // Your existing description overlay
+//                    
+//                    descriptionOverlay(geo: geo)
+//                }
             }
             .ignoresSafeArea()
             //.environment(\.dismiss, DismissAction { showFullScreen = false })
@@ -344,7 +345,7 @@ struct HistoryView: View {
                     Image("InstagramIcon")
                         .resizable()
                         .frame(width: 18, height: 18)
-                    Text("Description")
+                    Text("test")
                         .font(AppConstants.mediumRoundedFont)
                 }
                 .foregroundStyle(.white)
@@ -377,6 +378,7 @@ struct HistoryView: View {
             ProgressView()
         }
         .fullScreenCover(isPresented: $showFullScreen) {
+            
             FullScreenImageView2(
                 showFullScreen: $showFullScreen,
                 selectedURL: $selectedURL,
