@@ -10,8 +10,8 @@ typealias GoalStats = (String, Double, String)
 typealias CatStats = (String, Array<String>)
 
 struct test : View {
-    @State var dayValues = [5, 6, 7, 3, 10, 2, 4]
-    @State var monthValues = [10, 9, 8, 7, 6, 4, 3, 2, 1, 11, 12, 13]
+    @State var dayValues = [5, 6, 10, 3, 25, 10, 4]
+    @State var monthValues = [10, 9, 8, 7, 6, 4, 3, 2, 1, 11, 15, 20]
     
 
     @State var goalStats: [GoalStats] = [GoalStats("Days you hit your goal", 6.0, "days")]
@@ -165,6 +165,7 @@ struct DailyActivityStat: View {
 struct ActivityChart: View {
     let yLimit = 5
     let golas = 5
+    let goalsLimit = 5 - 1
     let limit = 7
     let monthLimit = 12
     let dayValues: [Int]
@@ -176,26 +177,26 @@ struct ActivityChart: View {
             if AppConstants.isiPad {
                 return Array(zip(
                     AppConstants.months.prefix(monthLimit),
-                    monthValues.prefix(monthLimit).map { dayValue in Double(dayValue) / Double(golas * yLimit) }
+                    monthValues.prefix(monthLimit).map { dayValue in Double(dayValue) / Double(goalsLimit * yLimit) }
                 ))
             }else {
                 if Calendar.current.isJanuaryToMarch() {
                    // Q1
                     return Array(zip(
                         AppConstants.months[0..<7],
-                        monthValues[0..<7].map { dayValue in Double(dayValue) / Double(golas * yLimit) }
+                        monthValues[0..<7].map { dayValue in Double(dayValue) / Double(goalsLimit * yLimit) }
                     ))
                 } else if Calendar.current.isNovemberToDecember() {
                     // Q3
                     return Array(zip(
                         AppConstants.months[5..<12],
-                        monthValues[5..<12].map { dayValue in Double(dayValue) / Double(golas * yLimit) }
+                        monthValues[5..<12].map { dayValue in Double(dayValue) / Double(goalsLimit * yLimit) }
                     ))
                 } else {
                     // Q2
                     return Array(zip(
                         AppConstants.months[3..<10],
-                        monthValues[3..<10].map { dayValue in Double(dayValue) / Double(golas * yLimit) }
+                        monthValues[3..<10].map { dayValue in Double(dayValue) / Double(goalsLimit * yLimit) }
                     ))
                 }
             }
@@ -203,7 +204,7 @@ struct ActivityChart: View {
         return Array(zip(
             AppConstants.weekdays.prefix(limit),
             dayValues.prefix(limit).map {dayValue in
-                    Double(dayValue) / Double(golas * yLimit)
+                    Double(dayValue) / Double(goalsLimit * yLimit)
             }
         ))
         
@@ -242,6 +243,7 @@ struct ActivityChart: View {
                     
                 ZStack {
                     VStack(spacing: 0){
+                        
                         ForEach((1..<yLimit).reversed(), id:\.self){index in
                             HStack{
                                 Rectangle()
@@ -269,28 +271,19 @@ struct ActivityChart: View {
                     HStack(alignment: .bottom, spacing: 20) {
                         ForEach(computedWeeklyData, id: \.0) { day, progress in
                             VStack(spacing: 0) {
+                                Spacer()
                                 Group {
                                     VerticalProgressBarView(for: progress)
-                                        .frame(height: AppConstants.deviceScreenHeightScalingForBarChart)
-                                    
+
                                     Text(day)
                                         .font(.caption.bold())
                                         .foregroundStyle(Color.white.opacity(0.2))
                                         //.frame(height: 120)
-                                    
                                 }
-                                    
                             }
-                            //.border(Color.red)
-                            
-
                         }
                     }
-                    //.border(Color.brown)
                 }
-
-
-
             }
             .animation(.easeInOut(duration: 0.4), value: isToggled)
 
@@ -329,6 +322,7 @@ struct ActivityChart: View {
             //.frame(height: 120)
             .frame(width: 12)
             .frame(height: AppConstants.deviceScreenHeightScalingForBarChart)
+            //.border(Color.brown)
 
     }
     @ViewBuilder
