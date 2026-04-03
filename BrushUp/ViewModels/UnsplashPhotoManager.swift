@@ -44,21 +44,39 @@ import Foundation
     }
     
     func fetchRandomPhoto() async {
-        
+
+        // Firebase API call
+        do {
+            let photoRecord = try await firebaseService.getRandomPhotoData()
+            picrureInfo = [PhotoRecord]()
+            
+            guard let record = photoRecord else {
+                throw URLError(.badServerResponse)
+            }
+            picrureInfo.append(record)
+            
+            guard let nextPhoto = picrureInfo.first else { return }
+            
+            playerHistoryRecord.append(nextPhoto)
+            currentPlayerHistoryIndex += 1
+            return
+        }catch {
+            picrureInfo = [PhotoRecord]()
+            print("Failed to fethc photo from firebase")
+        }
+
+        //Unsplash API call
         do {
             picrureInfo = try await unsplashService.fetchRandomPhoto()
+            guard let nextPhoto = picrureInfo.first else { return }
+            
+            playerHistoryRecord.append(nextPhoto)
+            currentPlayerHistoryIndex += 1
+            return
         } catch {
             picrureInfo = [PhotoRecord]()
             errorMessage = "Failed to load photo: \(error.localizedDescription)"
         }
-        
-
-
-        guard let nextPhoto = picrureInfo.first else { return }
-        
-        playerHistoryRecord.append(nextPhoto)
-        currentPlayerHistoryIndex += 1
-
     }
     
     func savePhotoData() async {

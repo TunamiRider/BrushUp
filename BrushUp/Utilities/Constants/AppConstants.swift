@@ -35,6 +35,9 @@ struct AppConstants {
     static var boldRoundedFont: Font {
         .system(size: 28, weight: .bold, design: .rounded)
     }
+    static var smallRoundedFont: Font {
+        .system(size: 16, weight: .medium, design: .rounded)
+    }
     
     @MainActor
     static let isiOS: Bool = {

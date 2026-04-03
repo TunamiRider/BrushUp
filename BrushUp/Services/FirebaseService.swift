@@ -6,23 +6,43 @@
 //
 import FirebaseFirestore
 import FirebaseCore
+import SwiftData
 
-actor FirebaseService {
-    private let deviceID: String
+public actor FirebaseService {
+    private var deviceID: String
     
+    public init(){
+        self.deviceID = UUID().uuidString
+    }
     init(uuidString: String){
         self.deviceID = uuidString
     }
     
+    func setDeviceID(uid: String) async -> Bool {
+        deviceID = uid  // Now works inside actor
+        return true
+    }
+    
+    func getDevieID() -> String {
+        return deviceID
+    }
+    
     private func save<T: FirestoreConvertible>(_ object: T,to collectionPath: String) async -> Bool {
         let db = Firestore.firestore()
-        
+        //print(collectionPath)
         return await withCheckedContinuation { continuation in
             db.collection(collectionPath)
                 .addDocument(data: object.dictionary) { error in
                     continuation.resume(returning: error == nil)
                 }
         }
+    }
+    func saveData<T: Codable>(_ object: T, to path: String) async throws -> Bool {
+        let db = Firestore.firestore()
+        let ref = db.document(path)
+        
+        try ref.setData(from: object)  // Now works!
+        return true
     }
     private func fetch<T: Codable>(_ type: T.Type,from collectionPath: String) async throws -> [T] {
         
@@ -40,6 +60,7 @@ actor FirebaseService {
         let path = FirestorePath.history(for: deviceID)
         
         return await save(record, to: path)
+        //return true
     }
     func fetchHistoryRecord() async throws -> [HistoryRecord] {
         let path = FirestorePath.history(for: deviceID)
@@ -56,6 +77,72 @@ actor FirebaseService {
         
         return try snapshot.data(as: Config.self).apiKey
     }
+    
+    func singUp(uid: String, createdAt: Date) async throws -> Bool {
+        
+        let db = Firestore.firestore()
+        
+        let user = User(uid: uid, createdAt: createdAt)
+        
+        //print("FirestorePath.users_path(for: uid) \(FirestorePath.users_path(for: uid))")
+        return try await saveData(user, to: FirestorePath.users_path(for: uid))
+    }
+    
+    public func getRandomPhotoData() async throws -> PhotoRecord? {
+        //throw URLError(.badServerResponse)
+        let db = Firestore.firestore()
+        // random photo wtih category
+        let config: ModelConfiguration = ModelConfiguration(isStoredInMemoryOnly: false)
+        let container:ModelContainer = try! ModelContainer(for: PhotoCategory.self, configurations: config)
+        let context = ModelContext(container)
+
+        let photoCategories: [PhotoCategory]
+        do {
+            photoCategories = try context.fetch(FetchDescriptor<PhotoCategory>(sortBy: [SortDescriptor(\PhotoCategory.name)]))
+        } catch {
+            print(error)
+            photoCategories = []
+        }
+        let photoCategory = photoCategories.isEmpty ? "" : photoCategories.randomElement()!.name
+        
+        if !photoCategory.isEmpty {
+            let snapshot = try await db.collection(FirestorePath.toPhotosCollection)
+                .whereField(FirestoreField.tags, arrayContains: photoCategory)
+                .getDocuments()
+
+            if let doc = snapshot.documents.randomElement(){
+                let docModel = try doc.data(as: PhotoDoc.self)
+                
+                let photoRecord = PhotoRecord(
+                    urls: Urls(regular: docModel.url),
+                    width: 0,
+                    height: 0
+                )
+                return photoRecord
+            }
+        }
+        
+        //random photo with index
+        let max_index = try await db.document(FirestorePath.toPhoto_index).getDocument().data(as: Index.self).photo_index
+        let randomIndex = Int.random(in: 1 ... max_index - 1)
+        
+        
+        let snapshot = try await db.collection(FirestorePath.toPhotosCollection)
+            .whereField(FirestoreField.index, isEqualTo:  randomIndex)
+            .getDocuments()
+
+        guard let doc = snapshot.documents.randomElement() else { return PhotoRecord(urls: Urls(regular: AppConstants.imageURL.absoluteString), width: 0, height: 0) }
+        
+        let docModel = try doc.data(as: PhotoDoc.self)
+        
+        let photoRecord = PhotoRecord(
+            urls: Urls(regular: docModel.url),
+            width: 0,
+            height: 0
+        )
+        return photoRecord
+    }
+
     
 
     // Write history data
