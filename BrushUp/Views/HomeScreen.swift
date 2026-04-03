@@ -5,7 +5,7 @@
 //  Created by Yuki Suzuki on 2/24/26.
 //
 import SwiftUI
-
+import FirebaseAuth
 struct HomeScreen: View {
     @Environment(AppServices.self) var services
     
@@ -24,6 +24,9 @@ struct HomeScreen: View {
     
     @State var stats: [GoalStats] = []
     @State var todaysStars: Int = 0
+    
+    @Binding var isLoggedIn: Bool
+    @State private var showingSignOutAlert = false
     // @State var top3Categories: [CatStats] = []
 //    let top5Categories = [
 //        ("Top 3 categories painted", ["animal", "city", "food"])
@@ -86,7 +89,7 @@ struct HomeScreen: View {
             
             strNewHitTheStars = Date.mmddyyyyString + ":0"
             UserDefaults.standard.set(strNewHitTheStars, forKey: SwiftDataKey.hitTheStars)
-
+            
         }
         
         if !hitDate.isValidMMddyyyy || !starDate.isValidMMddyyyy {
@@ -142,10 +145,40 @@ struct HomeScreen: View {
             VStack() {
                 VStack(alignment: .leading, spacing: 4){
                     
-                    Text("Let's Brush Up!")
-                        .font(AppConstants.boldRoundedFont)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
+                    
+                    HStack(spacing: 8) {
+                        Text("Let's Brush Up!")
+                            .font(AppConstants.boldRoundedFont)
+                            .foregroundStyle(.white)
+                        
+                            if !AppConstants.isiPad {
+                                Spacer()
+                            }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 8)
+                    .padding(.top, 12)
+                    .overlay(alignment: .trailing){
+                        HStack{
+                            Spacer()
+                            Spacer()
+
+                            createSignOutButton()
+                                .padding(.trailing, 3)  // Key: Space from edge
+                                .padding(.top, 16)
+//                            .alert("Sign Out", isPresented: $showingSignOutAlert) {
+//                                Button("Cancel", role: .cancel) { }
+//                                Button("Sign Out", role: .destructive) {
+//                                    Task { @MainActor in
+//                                        try? Auth.auth().signOut()
+//                                        isLoggedIn = false
+//                                    }
+//                                }
+//                            }
+                        }
+                    }
+                    
+                    
                     HStack(spacing: 8) {
                         Image("Target")
                             .resizable()
@@ -216,6 +249,10 @@ struct HomeScreen: View {
                             
                                 .animation(.easeInOut(duration: 0.8), value: showingGoalSheet)
                         }
+                        
+                        if showingSignOutAlert {
+                            signOutAlertOverlay()
+                        }
                     }
                 )
                 //Spacer()
@@ -285,11 +322,114 @@ struct HomeScreen: View {
                         )
                         
                 )
-                //.border(Color.cyan)
-//                .transition(.opacity.combined(with: .asymmetric(
-//                    insertion: .move(edge: .leading),
-//                    removal: .move(edge: .trailing))))
-//            .animation(.easeInOut(duration: 0), value: isResume)
+        }
+    }
+    @ViewBuilder
+    fileprivate func signOutAlertOverlay() -> some View {
+        Color.clear
+            .overlay(
+                VStack(spacing: 20) {
+                    Text("Sign Out")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                    
+                    Text("Are you sure you want to sign out?")
+                        .foregroundStyle(.white.opacity(0.8))
+                    
+                    HStack(spacing: 15) {
+                        Button("Cancel") {
+                            withAnimation(.easeOut) { showingSignOutAlert = false }
+                        }
+                        .padding()
+                        .background(AppConstants.dustypink)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(.white, lineWidth: 1)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(.white, lineWidth: 1)
+                                        .clipShape(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .offset(x: 8, y: -8)
+                                        )
+                                        .clipShape(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .offset(x: -8, y: 8)
+                                        )
+                                )
+                        )
+                        
+                        Button("Sign Out") {
+                            Task { @MainActor in
+                                do {
+                                    try Auth.auth().signOut()
+                                    isLoggedIn = false
+                                    let deviceID = UIDevice.current.identifierForVendor!.uuidString
+                                    let success = try await services.firebaseService.setDeviceID(uid: deviceID)
+                                }catch {
+                                    print("Sign out error: \(error.localizedDescription)")
+                                }
+                                withAnimation(.easeOut) { showingSignOutAlert = false }
+                            }
+                        }
+                        .padding()
+                        .background(Color(red: 0.95, green: 0.35, blue: 0.35))
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(.white, lineWidth: 1)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(.white, lineWidth: 1)
+                                        .clipShape(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .offset(x: 8, y: -8)
+                                        )
+                                        .clipShape(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .offset(x: -8, y: 8)
+                                        )
+                                )
+                        )
+                    }
+                }
+                .padding()
+                .frame(maxWidth: 300)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+            )
+            .animation(.easeInOut, value: showingSignOutAlert)
+    }
+    @ViewBuilder
+    fileprivate func createSignOutButton() -> some View {
+        Button(action: {
+            showingSignOutAlert = true
+        }) {
+            Text("Sign Out")
+                .font(AppConstants.isiPad ? AppConstants.boldRoundedFont : AppConstants.smallRoundedFont)
+                .padding(.vertical, AppConstants.isiPad ? 9 : 4.5)
+                .padding(.horizontal, AppConstants.isiPad ? 18 : 9)
+                .foregroundColor(.white)
+                .background(AppConstants.dustypink)
+                .cornerRadius(32)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 32)
+                        .stroke(.white, lineWidth: 1)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 32)
+                                .stroke(.white, lineWidth: 1)
+                                .clipShape(
+                                    RoundedRectangle(cornerRadius: 32)
+                                        .offset(x: 8, y: -8)
+                                )
+                                .clipShape(
+                                    RoundedRectangle(cornerRadius: 32)
+                                        .offset(x: -8, y: 8)
+                                )
+                        )
+                )
         }
     }
     @ViewBuilder
@@ -505,20 +645,21 @@ struct HomeScreen: View {
     
 }
 
-//#Preview {
-//     
-//    @Previewable @State var showingGoalSheet = true
-//    @Previewable @State var countDrawings = 0
-//    @Previewable @State var frequency = Frequency.day
-//    @Previewable @State  var goMainView = false
-//    @Previewable @State var isResume = false
-//    let appServices = AppServices()
-////    let unsplashPhotoManager = UnsplashPhotoManager(
-////        unsplashService: appServices.unsplashService,
-////        firebaseService: appServices.firebaseService
-////    )
-//    
-//    HomeScreen(goMainView: $goMainView, isResume: $isResume)
-//        .environment(appServices).background(AppConstants.spaceblack)
-//}
+#Preview {
+     
+    @Previewable @State var showingGoalSheet = true
+    @Previewable @State var countDrawings = 0
+    @Previewable @State var frequency = Frequency.day
+    @Previewable @State  var goMainView = false
+    @Previewable @State var isResume = false
+    @Previewable @State var isLoggedIn: Bool = false
+    let appServices = AppServices()
+//    let unsplashPhotoManager = UnsplashPhotoManager(
+//        unsplashService: appServices.unsplashService,
+//        firebaseService: appServices.firebaseService
+//    )
+    
+    HomeScreen(goMainView: $goMainView, isResume: $isResume, isLoggedIn: $isLoggedIn)
+        .environment(appServices).background(AppConstants.spaceblack)
+}
 

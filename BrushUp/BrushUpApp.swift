@@ -13,7 +13,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
     FirebaseApp.configure()
-      
+      //Analytics.setAnalyticsCollectionEnabled(false)
       //let db = Firestore.firestore()
       
     return true
@@ -66,7 +66,13 @@ struct BrushUpApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MainScreen()
+//            MainScreen()
+//                .environment(appServices)
+//                .environment(brushUpTimer)
+//                .environment(unsplashPhotoManager)
+//                .environment(appActiveObserver)
+            
+            LoginWrapper(firebaseService: appServices.firebaseService)
                 .environment(appServices)
                 .environment(brushUpTimer)
                 .environment(unsplashPhotoManager)

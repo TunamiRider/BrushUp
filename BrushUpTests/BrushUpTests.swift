@@ -45,12 +45,12 @@ struct BrushUpTests {
 //    }
     
     //### FirebaseService Test ###
-    @Test @MainActor func testSaveHistoryData() async throws {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let mockData = try decoder.decode([PhotoRecord].self, from: mockJASON)
-        
-    }
+//    @Test @MainActor func testSaveHistoryData() async throws {
+//        let decoder = JSONDecoder()
+//        decoder.keyDecodingStrategy = .convertFromSnakeCase
+//        let mockData = try decoder.decode([PhotoRecord].self, from: mockJASON)
+//        
+//    }
     @Test @MainActor func testSaveInvalidHistoryData() async throws {
         
     }
@@ -60,6 +60,22 @@ struct BrushUpTests {
 //        // let result: [UnsplashImage.ImageInfo] = firebaseService.readHistoryData()
 //    }
     @Test @MainActor func testReadInvalidHistoryData() async throws {
+        
+    }
+    
+    @Test @MainActor func testFetchRandomPhotoFromFirebase() async throws {
+        let firebaseService = FirebaseService()
+        
+        let photoRecord = try await firebaseService.getRandomPhotoData()
+        
+        
+        if let photoRecord {
+            print("✅ Got photo: \(photoRecord)")
+        } else {
+            print("❌ photoRecord is nil")
+        }
+        
+        #expect(photoRecord != nil)
         
     }
 }

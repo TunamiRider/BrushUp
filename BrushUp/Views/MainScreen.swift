@@ -16,6 +16,7 @@ struct MainScreen: View {
     @State private var isWeeklyList: Bool = true
     private let frameSize:CGFloat = 32
     @State private var showsSplashScreen: Bool = true
+    @Binding var isLoggedIn: Bool
     
     var safeArea: UIEdgeInsets {
         if let safeArea = (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.keyWindow?.safeAreaInsets {
@@ -199,7 +200,7 @@ struct MainScreen: View {
     private func tabContent(for tab: Tab) -> some View {
         switch tab {
         case .home:
-            HomeScreen(goMainView: $isPhotoPlayerScreen, isResume: $isResume)
+            HomeScreen(goMainView: $isPhotoPlayerScreen, isResume: $isResume, isLoggedIn: $isLoggedIn)
         case .history:
             HistoryView(isWeeklyList: $isWeeklyList)
         case .settings:
@@ -286,7 +287,7 @@ struct MainScreen: View {
     private var tabContent: some View {
         GeometryReader { geometry in  // geometry scoped HERE ↓
             HStack(spacing: 0) {
-                HomeScreen(goMainView: $isPhotoPlayerScreen, isResume: $isResume)
+                HomeScreen(goMainView: $isPhotoPlayerScreen, isResume: $isResume, isLoggedIn: $isLoggedIn)
                 HistoryView(isWeeklyList: $isWeeklyList)
                 Settings(isMonochrome: $isMonochrome)
             }
@@ -413,6 +414,8 @@ struct MainScreen: View {
 //    }
 }
 #Preview {
+    @Previewable @State var isLoggedIn = false;
+    
     let appServices = AppServices()
     let unsplashPhotoManager = UnsplashPhotoManager(
         unsplashService: appServices.unsplashService,
@@ -420,7 +423,7 @@ struct MainScreen: View {
     )
     let appActiveObserver: AppActiveObserver = .init()
     
-    MainScreen()
+    MainScreen(isLoggedIn: $isLoggedIn)
         .environment(appServices)
         .environment(unsplashPhotoManager)
         .environment(BrushUpTimer())
