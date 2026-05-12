@@ -25,7 +25,7 @@ struct AppConstants {
     static let UISpaceBlack = UIColor.black.withAlphaComponent(0.8)
     
     
-    static let minutesList = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
+    static let minutesList = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
     static let weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
     static let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     static let maximumDrawingGoal = 10

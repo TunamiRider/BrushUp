@@ -6,16 +6,16 @@
 //
 import Foundation
 import SwiftData
-struct UnsplashService: UnsplashServiceProtocol {
+public struct UnsplashService: UnsplashServiceProtocol {
 
     private let fetchService: FetchService
     private let firebaseService: FirebaseService
     
-    init(fetchService: FetchService, firebaseService: FirebaseService) {
+    public init(fetchService: FetchService, firebaseService: FirebaseService) {
         self.fetchService = fetchService
         self.firebaseService = firebaseService
     }
-    
+    @MainActor
     private func getApiKey() async throws -> String {
         //impl to test if apikey works
         let apikey_fb = (try? await firebaseService.getUnsplashApiKey()) ?? ""
@@ -33,8 +33,8 @@ struct UnsplashService: UnsplashServiceProtocol {
     }
     
     
-    
-    func fetchRandomPhoto() async throws -> [PhotoRecord] {
+    @MainActor
+    public func fetchRandomPhoto() async throws -> [PhotoRecord] {
         let config: ModelConfiguration = ModelConfiguration(isStoredInMemoryOnly: false)
         let container:ModelContainer = try! ModelContainer(for: PhotoCategory.self, configurations: config)
         let context = ModelContext(container)
@@ -57,6 +57,7 @@ struct UnsplashService: UnsplashServiceProtocol {
         return result ?? [PhotoRecord]()
     }
     
+    @MainActor
     func fetchPhotos() async throws -> [PhotoRecord] {
         
         let apikey = try await getApiKey()

@@ -80,7 +80,7 @@ public actor FirebaseService {
     
     func singUp(uid: String, createdAt: Date) async throws -> Bool {
         
-        let db = Firestore.firestore()
+        // let _ = Firestore.firestore()
         
         let user = User(uid: uid, createdAt: createdAt)
         
@@ -124,23 +124,42 @@ public actor FirebaseService {
         
         //random photo with index
         let max_index = try await db.document(FirestorePath.toPhoto_index).getDocument().data(as: Index.self).photo_index
-        let randomIndex = Int.random(in: 1 ... max_index - 1)
         
+        for _ in 0..<5 {
+            let randomIndex = Int.random(in: 1 ... max_index - 1)
+            
+            let snapshot = try await db.collection(FirestorePath.toPhotosCollection)
+                .whereField(FirestoreField.index, isEqualTo: randomIndex)
+                .getDocuments()
+            
+            if let doc = snapshot.documents.randomElement(){
+                
+                let docModel = try doc.data(as: PhotoDoc.self)
+                
+                return PhotoRecord(urls: Urls(regular: docModel.url), width: 0, height: 0)
+            }
+            
+        }
         
-        let snapshot = try await db.collection(FirestorePath.toPhotosCollection)
-            .whereField(FirestoreField.index, isEqualTo:  randomIndex)
-            .getDocuments()
-
-        guard let doc = snapshot.documents.randomElement() else { return PhotoRecord(urls: Urls(regular: AppConstants.imageURL.absoluteString), width: 0, height: 0) }
+        return PhotoRecord(urls: Urls(regular: AppConstants.imageURL.absoluteString), width: 0, height: 0)
         
-        let docModel = try doc.data(as: PhotoDoc.self)
-        
-        let photoRecord = PhotoRecord(
-            urls: Urls(regular: docModel.url),
-            width: 0,
-            height: 0
-        )
-        return photoRecord
+//        let randomIndex = Int.random(in: 1 ... max_index - 1)
+//        
+//        
+//        let snapshot = try await db.collection(FirestorePath.toPhotosCollection)
+//            .whereField(FirestoreField.index, isEqualTo:  randomIndex)
+//            .getDocuments()
+//
+//        guard let doc = snapshot.documents.randomElement() else { return PhotoRecord(urls: Urls(regular: AppConstants.imageURL.absoluteString), width: 0, height: 0) }
+//        
+//        let docModel = try doc.data(as: PhotoDoc.self)
+//        
+//        let photoRecord = PhotoRecord(
+//            urls: Urls(regular: docModel.url),
+//            width: 0,
+//            height: 0
+//        )
+//        return photoRecord
     }
 
     

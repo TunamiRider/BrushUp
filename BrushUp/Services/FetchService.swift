@@ -6,10 +6,10 @@
 //
 import Foundation
 
-struct FetchService {
+public struct FetchService {
     
     public init(){}
-
+    @MainActor
     public func loadData<T: Decodable>(endpoint url:String, type: T.Type) async throws -> [T] {
         
         guard let url = URL(string: url) else {
