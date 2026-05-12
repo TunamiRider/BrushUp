@@ -147,36 +147,30 @@ struct HomeScreen: View {
                     
                     
                     HStack(spacing: 8) {
+                        Spacer()
+                        Spacer()
                         Text("Let's Brush Up!")
                             .font(AppConstants.boldRoundedFont)
                             .foregroundStyle(.white)
                         
-                            if !AppConstants.isiPad {
+                            //if !AppConstants.isiPad {
                                 Spacer()
-                            }
+                            //}
+                        Spacer()
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 8)
                     .padding(.top, 12)
-                    .overlay(alignment: .trailing){
-                        HStack{
-                            Spacer()
-                            Spacer()
-
-                            createSignOutButton()
-                                .padding(.trailing, 3)  // Key: Space from edge
-                                .padding(.top, 16)
-//                            .alert("Sign Out", isPresented: $showingSignOutAlert) {
-//                                Button("Cancel", role: .cancel) { }
-//                                Button("Sign Out", role: .destructive) {
-//                                    Task { @MainActor in
-//                                        try? Auth.auth().signOut()
-//                                        isLoggedIn = false
-//                                    }
-//                                }
-//                            }
-                        }
-                    }
+//                    .overlay(alignment: .trailing){
+//                        HStack{
+//                            Spacer()
+//                            Spacer()
+//
+//                            createSignOutButton()
+//                                .padding(.trailing, 3)  // Key: Space from edge
+//                                .padding(.top, 16)
+//                        }
+//                    }
                     
                     
                     HStack(spacing: 8) {
@@ -367,7 +361,7 @@ struct HomeScreen: View {
                                     try Auth.auth().signOut()
                                     isLoggedIn = false
                                     let deviceID = UIDevice.current.identifierForVendor!.uuidString
-                                    let success = try await services.firebaseService.setDeviceID(uid: deviceID)
+                                    let _ = try await services.firebaseService.setDeviceID(uid: deviceID)
                                 }catch {
                                     print("Sign out error: \(error.localizedDescription)")
                                 }
