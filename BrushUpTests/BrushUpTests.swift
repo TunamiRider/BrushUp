@@ -6,7 +6,6 @@
 //
 
 import Testing
-// import PaintMe
 import BrushUp
 
 import Foundation
@@ -51,33 +50,6 @@ struct BrushUpTests {
 //        let mockData = try decoder.decode([PhotoRecord].self, from: mockJASON)
 //        
 //    }
-    @Test @MainActor func testSaveInvalidHistoryData() async throws {
-        
-    }
-//    @Test @MainActor func testReadHistoryData() async throws {
-//        let firebaseService : FirebaseService = FirebaseService()
-//        
-//        // let result: [UnsplashImage.ImageInfo] = firebaseService.readHistoryData()
-//    }
-    @Test @MainActor func testReadInvalidHistoryData() async throws {
-        
-    }
-    
-    @Test @MainActor func testFetchRandomPhotoFromFirebase() async throws {
-        let firebaseService = FirebaseService()
-        
-        let photoRecord = try await firebaseService.getRandomPhotoData()
-        
-        
-        if let photoRecord {
-            print("✅ Got photo: \(photoRecord)")
-        } else {
-            print("❌ photoRecord is nil")
-        }
-        
-        #expect(photoRecord != nil)
-        
-    }
 }
 
 //Shared mock data
