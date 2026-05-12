@@ -355,16 +355,16 @@ struct ActivityChart: View {
                 )
                 VStack(alignment: .leading, spacing: 16) {
                     TipView(number: 1,
-                            title: "Get Started Quickly",
-                            text: "Take a moment to explore the main features of the app. Most tools are designed to be simple, so try tapping around and see what each section does. The faster you get familiar with the layout, the easier it becomes to get things done.")
+                            title: "Practice with Timer & References",
+                            text: "Tap Start Drawing or Resume button to load/resume a random high-quality reference image. Swipe left/right to navigate previous or next references, loading fresh ones when you reach the end. Set your painting timer and it auto-saves to history when finished.")
 
                     TipView(number: 2,
-                            title: "Customize Your Experience",
-                            text: "Check the settings or preferences area to personalize the app. Many apps allow you to adjust notifications, themes, or default behaviors so the experience matches how you like to work.")
+                            title: "Review Your Painting History",
+                            text: "Browse your completed sessions by day or month. Tap any image to zoom in, swipe to navigate your progress, and track your improvement over time.")
 
                     TipView(number: 3,
-                            title: "Use Shortcuts and Time‑Savers",
-                            text: "Look for built‑in shortcuts, quick actions, or automation features. These tools can help you complete tasks faster and reduce repetitive steps once you know where to find them.")
+                            title: "Customize with Tags & Settings",
+                            text: "Add tags like 'cat' or 'portrait' to filter references. Adjust timer duration, enable monochrome mode, and apply settings from home or drawing screen.")
                 }
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
