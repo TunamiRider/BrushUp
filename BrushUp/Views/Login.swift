@@ -10,8 +10,8 @@ import Firebase
 import FirebaseAuth
 
 struct LoginWrapper: View {
-    @State var isLoggedIn = false
-    let firebaseService: FirebaseService
+    @State var isLoggedIn = true
+    //let firebaseService: FirebaseService
     
     var body: some View {
         NavigationStack {
@@ -21,7 +21,7 @@ struct LoginWrapper: View {
                 ZStack {
                     AppConstants.spaceblack
                         .ignoresSafeArea()
-                    Login(isLoggedIn: $isLoggedIn, firebaseService: firebaseService)
+                    Login(isLoggedIn: $isLoggedIn)//, firebaseService: firebaseService
                 }
             }
         }
@@ -35,7 +35,8 @@ struct Login: View {
     @State private var isLoading = false
 
     @Binding var isLoggedIn: Bool  // track login state
-    let firebaseService: FirebaseService
+    //let firebaseService: FirebaseService
+    @Environment(AppServices.self) var services
 
     var body: some View {
         //NavigationView {
@@ -140,7 +141,8 @@ struct Login: View {
                     
                     Task {@MainActor in
                         do {
-                            let success = try await firebaseService.setDeviceID(uid: uid)
+                            // let _ = try await firebaseService.setDeviceID(uid: uid)
+                            _ = try await services.firebaseService.setDeviceID(uid: uid)
                         } catch {
                             print("uid set failed")
                         }
@@ -168,7 +170,8 @@ struct Login: View {
                     Task {@MainActor in
                         do {
                             //print("saving ... ")
-                            let success = try await firebaseService.singUp(uid: uid, createdAt: createdAt)
+                            //let success = try await firebaseService.singUp(uid: uid, createdAt: createdAt)
+                            let success = try await services.firebaseService.singUp(uid: uid, createdAt: createdAt)
                             print(success)
                         } catch {
                             print("error")
@@ -194,7 +197,7 @@ struct Login: View {
         )
     }
     
-    LoginWrapper(firebaseService: appServices.firebaseService)
+    LoginWrapper()//firebaseService: appServices.firebaseService
         .environment(appServices)
         .environment(brushUpTimer)
         .environment(unsplashPhotoManager)

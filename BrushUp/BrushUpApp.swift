@@ -51,6 +51,7 @@ struct BrushUpApp: App {
     @State var isResume = false
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
+    @State var store: StoreManager = StoreManager()
     
     init() {
         // ✅ Perfectly safe - runs after Bundle.main is ready
@@ -66,17 +67,38 @@ struct BrushUpApp: App {
     
     var body: some Scene {
         WindowGroup {
+            
 //            MainScreen()
 //                .environment(appServices)
 //                .environment(brushUpTimer)
 //                .environment(unsplashPhotoManager)
 //                .environment(appActiveObserver)
             
-            LoginWrapper(firebaseService: appServices.firebaseService)
+            // First attempt subscription logic
+//            if store.isSubscribed {
+//                LoginWrapper()//firebaseService: appServices.firebaseService
+//                    .environment(appServices)
+//                    .environment(brushUpTimer)
+//                    .environment(unsplashPhotoManager)
+//                    .environment(appActiveObserver)
+//                    .environment(store)
+//            }else {
+//                SubscriptionPaywallView()
+//                    .environment(store)
+//            }
+            
+            //Second attempt subscription logic
+            MainEntry()  // New view below
                 .environment(appServices)
                 .environment(brushUpTimer)
                 .environment(unsplashPhotoManager)
                 .environment(appActiveObserver)
+                .environment(store)
+                .task {  // Ensures refresh on launch
+                    await store.refreshPurchasedProducts()
+                    await store.syncPurchases()
+                }
+
         }
     }
 }
