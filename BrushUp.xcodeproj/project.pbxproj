@@ -7,11 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		52537A342E2CA2EB00707BF8 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 52537A332E2CA2EB00707BF8 /* FirebaseCore */; };
-		52537A362E2CA2EB00707BF8 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 52537A352E2CA2EB00707BF8 /* FirebaseDatabase */; };
-		52537A382E2CB57F00707BF8 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 52537A372E2CB57F00707BF8 /* FirebaseFirestore */; };
-		52567B5F2DD00A3A0016FF37 /* ThemeKit in Frameworks */ = {isa = PBXBuildFile; productRef = 52567B5E2DD00A3A0016FF37 /* ThemeKit */; };
-		52567B612DD00A410016FF37 /* TimerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 52567B602DD00A410016FF37 /* TimerKit */; };
+		520B34662F58A453003F8429 /* keys.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 520B34652F58A453003F8429 /* keys.xcconfig */; };
+		525C56FA2F888CEE00B80137 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 525C56F92F888CEE00B80137 /* FirebaseAuth */; };
+		525C56FC2F888CF300B80137 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 525C56FB2F888CF300B80137 /* FirebaseCore */; };
+		525C56FE2F888D1400B80137 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 525C56FD2F888D1400B80137 /* FirebaseStorage */; };
+		525C57002F888D4000B80137 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 525C56FF2F888D4000B80137 /* FirebaseFirestore */; };
+		529A3CEF2FAD293D0007BEF7 /* TimerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 529A3CEE2FAD293D0007BEF7 /* TimerKit */; };
+		52C451422F906A670003366C /* BrushUp-Yuzu.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 52C451412F906A670003366C /* BrushUp-Yuzu.storekit */; };
+		52C451432F906A670003366C /* BrushUp-Yuzu.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 52C451412F906A670003366C /* BrushUp-Yuzu.storekit */; };
+		52C451442F906A670003366C /* BrushUp-Yuzu.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 52C451412F906A670003366C /* BrushUp-Yuzu.storekit */; };
+		52DB4AF52F78730500598BAF /* ThemeKit in Frameworks */ = {isa = PBXBuildFile; productRef = 52DB4AF42F78730500598BAF /* ThemeKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,14 +37,29 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		520B34652F58A453003F8429 /* keys.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = keys.xcconfig; sourceTree = "<group>"; };
+		52C451412F906A670003366C /* BrushUp-Yuzu.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "BrushUp-Yuzu.storekit"; sourceTree = "<group>"; };
 		52DC73022DCB09EC00F0D549 /* BrushUp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrushUp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52DC73102DCB09ED00F0D549 /* BrushUpTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BrushUpTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		52DC731A2DCB09ED00F0D549 /* BrushUpUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BrushUpUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		520B34682F58B61E003F8429 /* Exceptions for "BrushUp" folder in "BrushUp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 52DC73012DCB09EC00F0D549 /* BrushUp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		52DC73042DCB09EC00F0D549 /* BrushUp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				520B34682F58B61E003F8429 /* Exceptions for "BrushUp" folder in "BrushUp" target */,
+			);
 			path = BrushUp;
 			sourceTree = "<group>";
 		};
@@ -60,11 +80,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				52567B5F2DD00A3A0016FF37 /* ThemeKit in Frameworks */,
-				52537A342E2CA2EB00707BF8 /* FirebaseCore in Frameworks */,
-				52537A362E2CA2EB00707BF8 /* FirebaseDatabase in Frameworks */,
-				52537A382E2CB57F00707BF8 /* FirebaseFirestore in Frameworks */,
-				52567B612DD00A410016FF37 /* TimerKit in Frameworks */,
+				525C56FA2F888CEE00B80137 /* FirebaseAuth in Frameworks */,
+				525C56FC2F888CF300B80137 /* FirebaseCore in Frameworks */,
+				525C56FE2F888D1400B80137 /* FirebaseStorage in Frameworks */,
+				529A3CEF2FAD293D0007BEF7 /* TimerKit in Frameworks */,
+				52DB4AF52F78730500598BAF /* ThemeKit in Frameworks */,
+				525C57002F888D4000B80137 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,12 +106,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		52DB4AF12F7872FE00598BAF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		52DC72F92DCB09EC00F0D549 = {
 			isa = PBXGroup;
 			children = (
+				52C451412F906A670003366C /* BrushUp-Yuzu.storekit */,
+				520B34652F58A453003F8429 /* keys.xcconfig */,
 				52DC73042DCB09EC00F0D549 /* BrushUp */,
 				52DC73132DCB09ED00F0D549 /* BrushUpTests */,
 				52DC731D2DCB09ED00F0D549 /* BrushUpUITests */,
+				52DB4AF12F7872FE00598BAF /* Frameworks */,
 				52DC73032DCB09EC00F0D549 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -125,11 +156,12 @@
 			);
 			name = BrushUp;
 			packageProductDependencies = (
-				52567B5E2DD00A3A0016FF37 /* ThemeKit */,
-				52567B602DD00A410016FF37 /* TimerKit */,
-				52537A332E2CA2EB00707BF8 /* FirebaseCore */,
-				52537A352E2CA2EB00707BF8 /* FirebaseDatabase */,
-				52537A372E2CB57F00707BF8 /* FirebaseFirestore */,
+				52DB4AF42F78730500598BAF /* ThemeKit */,
+				525C56F92F888CEE00B80137 /* FirebaseAuth */,
+				525C56FB2F888CF300B80137 /* FirebaseCore */,
+				525C56FD2F888D1400B80137 /* FirebaseStorage */,
+				525C56FF2F888D4000B80137 /* FirebaseFirestore */,
+				529A3CEE2FAD293D0007BEF7 /* TimerKit */,
 			);
 			productName = PaintMe;
 			productReference = 52DC73022DCB09EC00F0D549 /* BrushUp.app */;
@@ -210,9 +242,9 @@
 			mainGroup = 52DC72F92DCB09EC00F0D549;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				52567B5B2DD009790016FF37 /* XCLocalSwiftPackageReference "Resources/ThemeKit" */,
-				52567B5C2DD009B60016FF37 /* XCLocalSwiftPackageReference "Resources/TimerKit" */,
-				52537A322E2CA2EB00707BF8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				52DB4AF02F7871B600598BAF /* XCLocalSwiftPackageReference "Resources/ThemeKit" */,
+				525C56F82F888CCA00B80137 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				529A3CED2FAD29260007BEF7 /* XCLocalSwiftPackageReference "Resources/TimerKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 52DC73032DCB09EC00F0D549 /* Products */;
@@ -231,6 +263,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				520B34662F58A453003F8429 /* keys.xcconfig in Resources */,
+				52C451422F906A670003366C /* BrushUp-Yuzu.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,6 +272,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52C451432F906A670003366C /* BrushUp-Yuzu.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -245,6 +280,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52C451442F906A670003366C /* BrushUp-Yuzu.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,6 +326,7 @@
 /* Begin XCBuildConfiguration section */
 		52DC73222DCB09ED00F0D549 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 520B34652F58A453003F8429 /* keys.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -341,10 +378,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -352,6 +393,7 @@
 		};
 		52DC73232DCB09ED00F0D549 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 520B34652F58A453003F8429 /* keys.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -397,9 +439,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -417,6 +463,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BrushUp/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -427,11 +475,11 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "";
-				MACOSX_DEPLOYMENT_TARGET = 15.3;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ysuzuki.BrushUp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -442,7 +490,9 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				XROS_DEPLOYMENT_TARGET = 2.4;
+				TVOS_DEPLOYMENT_TARGET = "";
+				WATCHOS_DEPLOYMENT_TARGET = "";
+				XROS_DEPLOYMENT_TARGET = "";
 			};
 			name = Debug;
 		};
@@ -459,6 +509,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BrushUp/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -469,11 +521,11 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "";
-				MACOSX_DEPLOYMENT_TARGET = 15.3;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ysuzuki.BrushUp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -484,7 +536,9 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				XROS_DEPLOYMENT_TARGET = 2.4;
+				TVOS_DEPLOYMENT_TARGET = "";
+				WATCHOS_DEPLOYMENT_TARGET = "";
+				XROS_DEPLOYMENT_TARGET = "";
 			};
 			name = Release;
 		};
@@ -497,18 +551,20 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZFAQZ35YP7;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
-				MACOSX_DEPLOYMENT_TARGET = 15.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = "";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ysuzuki.BrushUpTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BrushUp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BrushUp";
-				XROS_DEPLOYMENT_TARGET = 2.4;
+				TVOS_DEPLOYMENT_TARGET = "";
+				WATCHOS_DEPLOYMENT_TARGET = "";
+				XROS_DEPLOYMENT_TARGET = "";
 			};
 			name = Debug;
 		};
@@ -521,18 +577,20 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZFAQZ35YP7;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
-				MACOSX_DEPLOYMENT_TARGET = 15.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = "";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ysuzuki.BrushUpTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BrushUp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BrushUp";
-				XROS_DEPLOYMENT_TARGET = 2.4;
+				TVOS_DEPLOYMENT_TARGET = "";
+				WATCHOS_DEPLOYMENT_TARGET = "";
+				XROS_DEPLOYMENT_TARGET = "";
 			};
 			name = Release;
 		};
@@ -543,18 +601,20 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZFAQZ35YP7;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
-				MACOSX_DEPLOYMENT_TARGET = 15.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = "";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ysuzuki.BrushUpUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = BrushUp;
-				XROS_DEPLOYMENT_TARGET = 2.4;
+				TVOS_DEPLOYMENT_TARGET = "";
+				WATCHOS_DEPLOYMENT_TARGET = "";
+				XROS_DEPLOYMENT_TARGET = "";
 			};
 			name = Debug;
 		};
@@ -565,18 +625,20 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZFAQZ35YP7;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
-				MACOSX_DEPLOYMENT_TARGET = 15.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = "";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ysuzuki.BrushUpUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = BrushUp;
-				XROS_DEPLOYMENT_TARGET = 2.4;
+				TVOS_DEPLOYMENT_TARGET = "";
+				WATCHOS_DEPLOYMENT_TARGET = "";
+				XROS_DEPLOYMENT_TARGET = "";
 			};
 			name = Release;
 		};
@@ -622,52 +684,57 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		52567B5B2DD009790016FF37 /* XCLocalSwiftPackageReference "Resources/ThemeKit" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Resources/ThemeKit;
-		};
-		52567B5C2DD009B60016FF37 /* XCLocalSwiftPackageReference "Resources/TimerKit" */ = {
+		529A3CED2FAD29260007BEF7 /* XCLocalSwiftPackageReference "Resources/TimerKit" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Resources/TimerKit;
+		};
+		52DB4AF02F7871B600598BAF /* XCLocalSwiftPackageReference "Resources/ThemeKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Resources/ThemeKit;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		52537A322E2CA2EB00707BF8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		525C56F82F888CCA00B80137 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 12.0.0;
+				minimumVersion = 12.12.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		52537A332E2CA2EB00707BF8 /* FirebaseCore */ = {
+		525C56F92F888CEE00B80137 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 52537A322E2CA2EB00707BF8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 525C56F82F888CCA00B80137 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		525C56FB2F888CF300B80137 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 525C56F82F888CCA00B80137 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
 		};
-		52537A352E2CA2EB00707BF8 /* FirebaseDatabase */ = {
+		525C56FD2F888D1400B80137 /* FirebaseStorage */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 52537A322E2CA2EB00707BF8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseDatabase;
+			package = 525C56F82F888CCA00B80137 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
-		52537A372E2CB57F00707BF8 /* FirebaseFirestore */ = {
+		525C56FF2F888D4000B80137 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 52537A322E2CA2EB00707BF8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 525C56F82F888CCA00B80137 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
 		};
-		52567B5E2DD00A3A0016FF37 /* ThemeKit */ = {
+		529A3CEE2FAD293D0007BEF7 /* TimerKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 52567B5B2DD009790016FF37 /* XCLocalSwiftPackageReference "Resources/ThemeKit" */;
-			productName = ThemeKit;
-		};
-		52567B602DD00A410016FF37 /* TimerKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 52567B5C2DD009B60016FF37 /* XCLocalSwiftPackageReference "Resources/TimerKit" */;
+			package = 529A3CED2FAD29260007BEF7 /* XCLocalSwiftPackageReference "Resources/TimerKit" */;
 			productName = TimerKit;
+		};
+		52DB4AF42F78730500598BAF /* ThemeKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52DB4AF02F7871B600598BAF /* XCLocalSwiftPackageReference "Resources/ThemeKit" */;
+			productName = ThemeKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

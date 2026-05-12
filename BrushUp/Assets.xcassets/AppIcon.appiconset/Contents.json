@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "AppIcon1024@1x.png",
+      "filename" : "Brushup-icon.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "AppIcon1024@1x 1.png",
+      "filename" : "Brushup-icon 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -25,7 +25,7 @@
           "value" : "tinted"
         }
       ],
-      "filename" : "AppIcon1024@1x 2.png",
+      "filename" : "Brushup-icon 2.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -76,6 +76,7 @@
       "size" : "512x512"
     },
     {
+      "filename" : "Brushup-icon 3.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
